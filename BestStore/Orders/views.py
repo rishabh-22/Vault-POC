@@ -3,7 +3,7 @@ from Products.models import Product
 
 
 def checkout(request):
-    cart = request.session['cart']
+    cart = request.session.get('cart', list())
     context = {'products': list()}
     for detail in cart:
         product = Product.objects.get(pk=detail['pk'])
