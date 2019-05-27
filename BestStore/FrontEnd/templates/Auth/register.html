@@ -110,6 +110,10 @@
 		evt.preventDefault()
 		
 		$('#response-error').html('')
+<<<<<<< HEAD
+=======
+		$('.loader').css('display', 'block')
+>>>>>>> 67bcaf814e27399906c35c462cfeddc09ee99000
 
 		for (let i = 0; i < inputs.length; i++) {
 			if (regx_patts.hasOwnProperty(inputs[i].name)) {
@@ -118,7 +122,10 @@
 		}
 		
 		if (ConfirmPassword() && form_is_good_to_post && !server_is_processing) {
+<<<<<<< HEAD
 			$('.loader').css('display', 'block')
+=======
+>>>>>>> 67bcaf814e27399906c35c462cfeddc09ee99000
 			server_is_processing = true
 			form_data = $('.signup').children('.post')
 			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
