@@ -1,0 +1,158 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Register Page</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- register -->
+	<div class="register">
+		<div class="container">
+			<h3 class="animated wow zoomIn" data-wow-delay=".5s" id='confirmation-title'>Register Here</h3>
+			<p class="est animated wow zoomIn" data-wow-delay=".5s" id='confirmation-message' style='display: none;'>An email verification link has been sent to the address provided.</p>
+			<div class="login-form-grids" id='register-form-container'>
+				<h5 class="animated wow slideInUp" data-wow-delay=".5s">profile information</h5>
+				<form class="animated wow slideInUp signup" data-wow-delay=".5s" onsubmit="return false;">
+					{% csrf_token %}
+					<input class='post' id='first_name' name='first_name' type="text" placeholder="First Name...">
+					<p id='error-first_name'></p>
+					<input class='post' id='last_name' name='last_name' type="text" placeholder="Last Name...">
+					<p id='error-last_name'></p>
+					<select class='post' id='gender' name='gender' form-control" id="sel1" style='margin-top: 14px;'>
+						<option>Male</option>
+						<option>Female</option>
+					</select>
+													{% comment %} <div class="register-check-box animated wow slideInUp" data-wow-delay=".5s">
+														<div class="check">
+															<label class="checkbox"><input type="checkbox" name="checkbox"><i> </i>Subscribe to Newsletter</label>
+														</div>
+													</div> {% endcomment %}
+					<h6 class="animated wow slideInUp" id='register-logininfo' data-wow-delay=".5s">Login information</h6>
+					<input class='post' id='username' name='username' type="text" placeholder="Email Address">
+					<p id='error-username'></p>
+					<input class='post' id='password' name='password' type="password" placeholder="Password" title='8-15 characters including at least 1 lowercase and uppercase alphabetic character, 1 numeric character, and one special character (!@#$%^&).'>
+					<p id='error-password'></p>
+					<input type="password" id='secondpassword' placeholder="Password Confirmation">
+					<p id='error-confirmpassword'></p>
+					<input class='post' id='phone' name='phone' type="text" placeholder="Mobile Phone" style='margin-top: 14px;'>
+					<p id='error-phone'></p>
+													{% comment %} <div class="register-check-box">
+														<div class="check">
+															<label class="checkbox"><input type="checkbox" name="checkbox"><i> </i>I accept the terms and conditions</label>
+														</div>
+													</div> {% endcomment %}
+					<div id='response-error' style='text-align: center; color: red; margin-top: 14px;'></div>
+					<div class="loader" style='margin: auto; display: none; margin-top: 8px;'></div>
+					<input type="submit" value="Register" id='signup-button'>
+				</form>
+			</div>
+			<div class="register-home animated wow slideInUp" data-wow-delay=".5s">
+				<a href="index.html">Home</a>
+			</div>
+		</div>
+	</div>
+<!-- //register -->
+
+
+<script type='text/javascript'>
+	var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+	var form_is_good_to_post = true
+	var server_is_processing = false
+
+	regx_patts = {
+		first_name: [/^[A-Za-z]+$/, '*Only alphabetical characters allowed'],
+		last_name: [/^[A-Za-z]+$/, '*Only alphabetical characters allowed'],
+		username: [/^(\D)+(\w)*((\.(\w)+)?)+@(\D)+(\w)*((\.(\D)+(\w)*)+)?(\.)[a-z]{2,}$/, '*Only valid emails allowed'],
+		password: [/^(?=(.*[a-zA-Z].*){2,})(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,15}$/, '*Must be 8-15 characters with at least one uppercase letter, lower case letter, digit, and special character'],
+		phone: [/^\d{10}$/, '*Must be a 10 digit phone number']
+	}
+
+
+    function ConfirmPassword() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("secondpassword").value;
+		if (password === confirmPassword) {
+			return true
+		}
+		$('#error-confirmpassword').html('*Passwords must match')
+		$('#secondpassword').css('border', '1px solid red')
+		return false
+    }
+
+	function ValidateField(name, val) {
+		if (!regx_patts[name][0].test(val)) {
+			form_is_good_to_post = false
+			if (name==='first_name') {
+				$('#'+name).css('margin-bottom', '0px')
+			}
+			$('#'+name).css('border', '1px solid red')
+			$('#error-'+name).html(regx_patts[name][1])
+		}
+	}
+
+	$('#signup-button').click(function() {
+		form_is_good_to_post = true
+		inputs = $('.signup').children('.post')
+		for (let i = 0; i < inputs.length; i++) {
+			inputs[i].required = true
+		}
+	})
+
+
+
+	var form = document.querySelector('.signup').onsubmit = function (evt) {
+		evt.preventDefault()
+		
+		$('#response-error').html('')
+
+		for (let i = 0; i < inputs.length; i++) {
+			if (regx_patts.hasOwnProperty(inputs[i].name)) {
+				ValidateField(inputs[i].name, inputs[i].value)
+			}
+		}
+		
+		if (ConfirmPassword() && form_is_good_to_post && !server_is_processing) {
+			$('.loader').css('display', 'block')
+			server_is_processing = true
+			form_data = $('.signup').children('.post')
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					server_is_processing = false
+					$('.loader').css('display', 'none')
+					res = JSON.parse(this.responseText)
+					if (res['success']) {
+						$('#response-error').css('display', 'none')
+						$('#register-form-container').css('display', 'none')
+						$('#confirmation-message').css('display', 'block')
+						$('#confirmation-title').html('Success')
+						document.body.scrollTop = document.documentElement.scrollTop = 0;
+					} else {
+						$('#response-error').html('An account with this email already exists!')
+					}
+				}
+			};
+			obj_to_post = new Object()
+			for (let i = 0; i < form_data.length; i++) {
+				obj_to_post[form_data[i].name] = form_data[i].value
+			}
+			xmlhttp.open("POST", "/api/user/register/");
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			xmlhttp.setRequestHeader("X-CSRFToken", csrftoken);
+			xmlhttp.send(JSON.stringify(obj_to_post));
+			
+		} else if (!server_is_processing) {
+			$('#response-error').html("1 or more fields contain invalid inputs...")
+		}
+	};	
+</script>
+
+
+{% include "General/footer.html" %}
+{% endblock %}

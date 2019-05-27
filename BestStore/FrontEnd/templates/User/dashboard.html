@@ -1,0 +1,52 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Profile</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+
+<div class="typo">
+		<div class="container">
+			<div class="typo-grids">
+			<h3 class="title animated wow zoomIn" data-wow-delay=".5s">{{ firstname }} 's Profile</h3>
+			<p class="est animated wow zoomIn" data-wow-delay=".5s">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+				deserunt mollit anim id est laborum.</p>
+			<div class="grid_3 grid_4 animated wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="500ms">
+				<h3 class="hdg">Account</h3>
+				<div class="bs-example">
+					<table class="table">
+						<tbody>
+							<tr>
+								<td><a class="anchorjs-link" href="/"><h1 id="h1.-bootstrap-heading">Your Orders</h1></a></td>
+							</tr>
+							<tr>
+								<td><a class="anchorjs-link" href="/"><h1 id="h2.-bootstrap-heading">Your Wish List</h1></a></td>
+							</tr>
+							<tr>
+								<td><a class="anchorjs-link" href="/"><h1 id="h3.-bootstrap-heading">Reset Password</h1></a></td>
+							</tr>
+							{% if user.is_authenticated %}
+							<tr>
+								<td><a class="anchorjs-link" href="{% url 'update_profile' user.id %}"><h1 id="h4.-bootstrap-heading">Update Profile</h1></a></td>
+							</tr>
+							<tr>
+								<td><a class="anchorjs-link" href="{% url 'delete_profile' user.id %}"><h1 id="h5.-bootstrap-heading">Delete Profile</h1></a></td>
+							</tr>
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+            </div>
+        </div>
+</div>
+
+{% include "General/footer.html" %}
+{% endblock %}

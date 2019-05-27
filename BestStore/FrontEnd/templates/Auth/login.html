@@ -1,0 +1,105 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Login Page</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- login -->
+	<div class="login">
+		<div class="container">
+			<h3 class="animated wow zoomIn" data-wow-delay=".5s">Login Form</h3>
+			<p class="est animated wow zoomIn" data-wow-delay=".5s">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
+				deserunt mollit anim id est laborum.</p>
+			<div class="login-form-grids animated wow slideInUp" data-wow-delay=".5s">
+				<form id='login' onsubmit="return false;">
+					{% csrf_token %}
+					<input class='post' type="email" id='email' name='email' placeholder="Email Address" required>
+					<p id='error-email'></p>
+					<input class='post' type="password" id='password' name='password' placeholder="Password" required>
+					<p id='error-password'></p>
+					<div class="forgot">
+						<a href="#">Forgot Password?</a>
+					</div>
+					<input type="submit" value="Login" id='login-button'>
+				</form>
+			</div>
+			<h4 class="animated wow slideInUp" data-wow-delay=".5s">For New People</h4>
+			<p class="animated wow slideInUp" data-wow-delay=".5s"><a href="{% url 'registerform' %}">Register Here</a> (Or) go back to <a href="{% url 'homepage' %}">Home<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></p>
+		</div>
+	</div>
+<!-- //login -->
+
+<script type='text/javascript'>
+	var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val()
+	var form_is_good_to_post = true
+
+	regx_patts = {
+		email: [/(\D)+(\w)*((\.(\w)+)?)+@(\D)+(\w)*((\.(\D)+(\w)*)+)?(\.)[a-z]{2,}/, '*Only valid emails allowed'],
+		password: [/^(?=(.*[a-zA-Z].*){2,})(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,15}$/, '*Only valid passwords allowed']
+	}
+
+
+	function ValidateField(name, val) {
+		if (!regx_patts[name][0].test(val)) {
+			form_is_good_to_post = false
+			$('#'+name).css('border', '1px solid red')
+			$('#error-'+name).html(regx_patts[name][1])
+		}
+	}
+
+
+	document.querySelector('#login-button').onclick = function (evt) {
+		form_is_good_to_post = true
+		inputs = $('#login').children('.post')
+		for (let i = 0; i < inputs.length; i++) {
+			inputs[i].required = true
+		}
+	}
+
+	var form = document.querySelector('#login').onsubmit = function (evt) {
+		evt.preventDefault();
+
+		for (let i = 0; i < inputs.length; i++) {
+			if (regx_patts.hasOwnProperty(inputs[i].name)) {
+				ValidateField(inputs[i].name, inputs[i].value)
+			}
+		}
+		
+		if (form_is_good_to_post) {
+			form_data = $('#login').children('.post')
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success']) {
+						window.location.href = '/'
+					} else {
+						if (res['exists']) {
+							alert('PLEASE CONFIRM YOUR EMAIL')
+						} else {
+							alert('BAD CREDENTIALS')
+						}
+					}
+				}
+			};
+			obj_to_post = new Object()
+			for (let i = 0; i < form_data.length; i++) {
+				obj_to_post[form_data[i].name] = form_data[i].value
+			}
+			xmlhttp.open("POST", "/api/user/login/");
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			xmlhttp.setRequestHeader("X-CSRFToken", csrftoken);
+			xmlhttp.send(JSON.stringify(obj_to_post));
+		}
+	}
+</script>
+
+{% include "General/footer.html" %}
+{% endblock %}
