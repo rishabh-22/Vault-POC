@@ -6,6 +6,7 @@ from django.views.generic.detail import DetailView
 
 
 def home(request):
+    """This will render the homepage"""
     return render(request, "Products/homepage.html")
 
 

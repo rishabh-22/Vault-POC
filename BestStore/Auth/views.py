@@ -31,12 +31,8 @@ def register_user(request):
     """This function will register a user"""
     if request.method == 'POST':
         body = json.loads(request.body)
-<<<<<<< HEAD
         user_model_keys = ('username', 'first_name', 'last_name')
         user_dict = {key: body[key] for key in user_model_keys}
-=======
-        user_dict = {key: body[key] for key in ('username', 'first_name', 'last_name')}
->>>>>>> 67bcaf814e27399906c35c462cfeddc09ee99000
         user_dict.update({
             'password': make_password(body['password']), 
             'email': user_dict['username'],
@@ -45,8 +41,6 @@ def register_user(request):
         try:
             new_user = User(**user_dict)
             new_user.save()
-<<<<<<< HEAD
-
             token = new_user.password.replace('/', '*')
             url = f"http://127.0.0.1:8000/api/user/verify/{token}/"
             name = f'{new_user.first_name} {new_user.last_name}'
@@ -54,24 +48,13 @@ def register_user(request):
 
             html_message = render_to_string('General/email.html', context)
             plain_message = strip_tags(html_message)
-
-=======
-            url = f"http://127.0.0.1:8000/api/user/verify/{new_user.password.replace('/','*')}"
-            full_name = f'{new_user.first_name} {new_user.last_name}'
-            context = {'action': 'Confirm Email', 'url': url, 'full_name': full_name}
-            html_message = render_to_string('General/email.html', context)
-            plain_message = strip_tags(html_message)
->>>>>>> 67bcaf814e27399906c35c462cfeddc09ee99000
             send_mail('Best Store Account Confirmation',
                       plain_message,
                       'admin@thebeststore.com',
                       [new_user.email],
                       html_message=html_message,
                       fail_silently=False)
-<<<<<<< HEAD
-                      
-=======
->>>>>>> 67bcaf814e27399906c35c462cfeddc09ee99000
+
             json_res = {'success': True}
             return JsonResponse(json_res)
         except Exception:
@@ -83,19 +66,13 @@ def user_login(request):
     """This is a login function using Django's inbuilt login functionality"""
     body = json.loads(request.body)
     username, password = body['email'], body['password']
-<<<<<<< HEAD
     cart = request.session.get('cart', False)
-=======
->>>>>>> 67bcaf814e27399906c35c462cfeddc09ee99000
     user = authenticate(request, username=username, password=password)
     if user is not None:
         name = user.first_name
         login(request, user)
-<<<<<<< HEAD
         request.session['cart'] = cart
-=======
-        request.session['username'] = name
->>>>>>> 67bcaf814e27399906c35c462cfeddc09ee99000
+
         json_res = {'success': True}
         return JsonResponse(json_res)
     elif len(User.objects.filter(username=username)):
