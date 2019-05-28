@@ -1,20 +1,16 @@
 import json
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
-from django.views.generic import UpdateView
-from django.views.generic import DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.template.loader import render_to_string
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def render_login_form(request):
