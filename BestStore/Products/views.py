@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.http import Http404
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
+from collections import OrderedDict
 
 
 def home(request):
@@ -51,15 +52,13 @@ def cart_add(request, pk):
         qty = request.GET.get('qty', 1)
 
         sess['cart_qty'] = sess.get('cart_qty', 0) + qty
-        sess['cart'] = sess.get('cart', list())
+        sess['cart'] = sess.get('cart', OrderedDict())
 
-        already_in_cart = False
-        for prod in sess['cart']:
-            if prod['pk'] == pk:
-                already_in_cart = True
-                prod['qty'] += qty
-        if not already_in_cart:
-            sess['cart'].append({'pk': pk, 'qty': qty})
+        if sess['cart'].get(pk, False):
+            sess['cart'][pk]['qty'] += qty
+        else:
+            sess['cart'][pk] = {'qty': qty, 'pk': pk}
+
         return JsonResponse({'success': True})
 
 
@@ -69,8 +68,17 @@ def cart_empty(request, pk=0):
         if pk == 0:
             sess = request.session
             sess['cart_qty'] = 0
-            sess['cart'] = list()
+            sess['cart'] = OrderedDict()
             return JsonResponse({'success': True})
+
+
+def cart_item_remove(request, pk=0):
+    """Remove a single item (possible multiple qty) from the cart"""
+    if request.method == 'GET' and pk != 0:
+        cart = request.session['cart']
+        qty = request.GET.get('qty', False)
+
+        pass
 
 
 class ProductDetailView(DetailView):
