@@ -140,3 +140,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "rbtherib2@gmail.com"
 EMAIL_HOST_PASSWORD = "abc@123@xyz"
 
+USER_REGISTER_KEYS = ('username', 'first_name', 'last_name')
+VERIFY_EMAIL_URL = "http://127.0.0.1:8000/api/user/verify"
+DUMMY_EMAIL = "admin@thebeststore.com"
+EMAIL_SUBJECT = 'Best Store Account Confirmation'
+
+PAGINATION_URL = '/products/?page='
+PRODUCTS_PER_PAGE = 6

@@ -7,6 +7,7 @@ def add_session_cart(request):
     total_price = 0
 
     cart = request.session.get('cart', dict())
+
     for key in cart:
         qty = cart[key]['qty']
         pk = cart[key]['pk']

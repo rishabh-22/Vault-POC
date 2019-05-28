@@ -6,7 +6,7 @@
 	<div class="breadcrumbs">
 		<div class="container">
 			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
-				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
 				<li class="active">Single Page</li>
 			</ol>
 		</div>
@@ -17,26 +17,8 @@
 		<div class="container">
 			<div class="col-md-4 products-left">
 				<div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
-
-						<script type='text/javascript'>//<![CDATA[
-						$(window).load(function(){
-						 $( "#slider-range" ).slider({
-								range: true,
-								min: 0,
-								max: 100000,
-								values: [ 10000, 60000 ],
-								slide: function( event, ui ) {  $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-								}
-					 });
-					$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) + " - $" + $( "#slider-range" ).slider( "values", 1 ) );
-
-
-						});//]]>
-						</script>
 						<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
-					 <!---->
 				</div>
-
 				<div class="men-position animated wow slideInUp" data-wow-delay=".5s">
 					<a href="single.html"><img src="{% static 'images/29.jpg' %}" alt=" " class="img-responsive" /></a>
 					<div class="men-position-pos">
@@ -95,18 +77,6 @@
 					<div class="occasion-cart">
 						<a class="item_add" href="#">add to cart </a>
 					</div>
-					<div class="social">
-						<div class="social-left">
-							<p>Share On :</p>
-						</div>
-						<div class="social-right">
-							<ul class="social-icons">
-								<li><a href="#" class="facebook"></a></li>
-								<li><a href="#" class="twitter"></a></li>
-								<li><a href="#" class="g"></a></li>
-								<li><a href="#" class="instagram"></a></li>
-							</ul>
-						</div>
 						<div class="clearfix"> </div>
 					</div>
 				</div>
@@ -155,7 +125,6 @@
 										</div>
 										<div class="clearfix"> </div>
 									</div>
-
 								</div>
 							</div>
 						</div>
