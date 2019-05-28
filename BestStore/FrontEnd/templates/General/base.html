@@ -245,10 +245,15 @@ $( document ).ready(function() {
 	})
 
 	var update_cart_header = function(price, qty) {
-		current_cart_qty = parseInt(current_cart_qty) + qty
-		$('#cart-qty').html(current_cart_qty)
+		if (add) {
+			current_cart_qty = parseInt(current_cart_qty) + qty
+			current_cart_price = parseInt(current_cart_price) + (qty*price)
+		} else {
+			current_cart_qty = parseInt(current_cart_qty) - qty
+			current_cart_price = parseInt(current_cart_price) - (qty*price)	
+		}
 
-		current_cart_price = parseInt(current_cart_price) + (qty*price)
+		$('#cart-qty').html(current_cart_qty)
 		$('#cart-price').html(current_cart_price)
 	}
 
@@ -257,6 +262,7 @@ $( document ).ready(function() {
 			$('#cart-qty').html('0')
 			$('#cart-price').html('0')
 		}
+		$('.rem1').css('display', 'none')
 	}
 
 });

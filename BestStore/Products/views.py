@@ -74,11 +74,20 @@ def cart_empty(request, pk=0):
 
 def cart_item_remove(request, pk=0):
     """Remove a single item (possible multiple qty) from the cart"""
-    if request.method == 'GET' and pk != 0:
+    if request.method == 'GET' and pk > 0:
         cart = request.session['cart']
         qty = request.GET.get('qty', False)
 
-        pass
+        cart_item = cart.get(str(pk), False)
+        if cart_item:
+            cart_item['qty'] -= int(qty)
+            if cart_item['qty'] <= 0:
+                del cart[str(pk)]
+                request.session.modified = True
+        
+        return JsonResponse({'success': True})
+
+
 
 
 class ProductDetailView(DetailView):
