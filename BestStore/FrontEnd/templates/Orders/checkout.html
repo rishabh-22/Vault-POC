@@ -75,25 +75,29 @@
 			$(evt.target.getAttribute('data-row-id')).css('display', 'none')
 			pk = evt.target.getAttribute('data-product-pk')
 			price = evt.target.getAttribute('data-product-price')
-			qty = evt.taget.getAttribute('data-product-qty')
+			qty = evt.target.getAttribute('data-product-qty')
 
 			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					res = JSON.parse(this.responseText)
 					if (res['success'] === true) {
-						remove_cart_item(price, qty)
+						remove_cart_items_display(parseInt(price), parseInt(qty))
 
 					}
 				}
 			};
 
-			xmlhttp.open("GET", "/api/product/cart/remove/"+pk+"/");
+			xmlhttp.open("GET", "/api/product/cart/remove/"+pk+"/?qty="+qty);
 			xmlhttp.send();
 		});
 
-		def remove_cart_item(price, qty) {
-			
+		var remove_cart_items_display = function(price, qty) {
+			current_cart_qty = parseInt(current_cart_qty) - qty
+			current_cart_price = parseInt(current_cart_price) - (qty*price)
+
+			$('#cart-qty').html(current_cart_qty)
+			$('#cart-price').html(current_cart_price)
 		}
 	});	  
 </script>
