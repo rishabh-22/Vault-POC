@@ -3,7 +3,6 @@ from .views import checkout
 
 
 urlpatterns = [
-
     path('checkout/', checkout, name="checkout"),
 
 ]
