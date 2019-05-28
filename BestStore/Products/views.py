@@ -1,6 +1,7 @@
 from .models import Product
 from .models import Category
 from django.http import JsonResponse
+from django.http import Http404
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
 
@@ -15,13 +16,13 @@ def product_listings(request):
     if request.method == 'GET':
         try:
             page = int(request.GET.get('page', 1))
-        except:
+        except ValueError:
             page = 1
         category = Category.objects.all()
         all_products = Product.objects.all()
-
+        if len(all_products) == 0:
+            return Http404()
         prods_per_page = 6
-
         total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
         if page < 1:
             page = 1
