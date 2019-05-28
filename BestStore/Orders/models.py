@@ -1,5 +1,5 @@
 from django.db import models
-from BestStore.Products.models import Product
+from Products.models import Product
 from django.contrib.auth.models import User
 
 PAYMENT_CHOICES = (

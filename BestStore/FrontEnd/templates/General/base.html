@@ -111,12 +111,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 									<div class="row">
 										<div class="col-sm-4">
 											<ul class="multi-column-dropdown">
-												<h6>Men's Wear</h6>
+												<h6> Category </h6>
+												{% for db_name, item in category_choices %}
+													{{ item }} <br>
+												{% endfor %}
 												<li><a href="products.html">Clothing</a></li>
-												<li><a href="products.html">Wallets</a></li>
-												<li><a href="products.html">Shoes</a></li>
-												<li><a href="products.html">Watches</a></li>
-												<li><a href="products.html">Accessories</a></li>
 											</ul>
 										</div>
 										<div class="col-sm-4">
