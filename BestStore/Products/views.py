@@ -1,6 +1,9 @@
+import json
+from itertools import chain
+
 from django.views.generic import ListView
-from .models import Product, Category
-from django.http import JsonResponse, Http404
+from .models import Product, Category, SubCategory
+from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from collections import OrderedDict
@@ -24,6 +27,7 @@ def product_listings(request):
         :return: Rendered product list view with pagination
     """
     if request.method == 'GET':
+        search_term = ""
         try:
             # Extract page parameter from page request and try to convert to int
             page = int(request.GET.get('page', 1))
@@ -31,7 +35,8 @@ def product_listings(request):
             # If page argument is an alphabet this will set the page to 1
             page = 1
         # Grab all categories for filtering purposes on web page
-        category = Category.objects.all()
+        all_category = Category.objects.all()
+        all_sub_category = SubCategory.objects.all()
         # Grab all products to paginate
         all_products = Product.objects.all()
         # If no products are in database then we have nothing to show the user
@@ -52,13 +57,29 @@ def product_listings(request):
         # Use index slicing to get the products which are to be displayed on the rendered template
         products = all_products[start_index: end_index]
         # Set context variable for template to use to display the products and paginated navigation
+        if 'search' in request.GET:
+            products = []
+            data = request.GET['search']
+            data_split = data.split(" in ")
+            search_term = data_split[0]
+            products = all_products.filter(name__icontains=search_term)
+            category_choice = all_category.filter(category__icontains=search_term)
+            sub_category_choice = all_sub_category.filter(title__icontains=search_term)
+            if sub_category_choice:
+                products = sub_category_choice[0].product_set.all()
+            if category_choice:
+                for i in range(0, len(category_choice[0].subcategory_set.all())):
+                    products_in_category = category_choice[0].subcategory_set.all()[i].product_set.all()
+                    products = list(chain(products, products_in_category))
+
         info = {
-            'category': category,
+            'category': all_category,
             'product': products,
             'pages': range(1, total_pages + 1),
             'current_page': page,
             'prev': f'{PAGINATION_URL}{page - 1}' if page != 1 else '#',
             'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
+            'search_term': search_term,
         }
         # Render template with context containing pagination details
         return render(request, 'Products/products.html', context=info)
@@ -146,3 +167,25 @@ class FeaturedProduct(ListView):
         # Product model object to be used on detail page
         context['featured'] = Product.objects.filter(is_featured=1).order_by('-modified_date')
         return context
+
+
+def autocompletemodel(request):
+    if request.is_ajax():
+
+        q = request.GET.get('term', '')
+        product_qs = Product.objects.filter(name__icontains=q)
+        category_qs = Category.objects.filter(category__icontains=q)
+        sub_category_qs = SubCategory.objects.filter(title__icontains=q)
+        search_qs = list(chain(product_qs, category_qs, sub_category_qs))
+        results = []
+        for r in product_qs:
+            results.append(r.name + " in Products")
+        for r in category_qs:
+            results.append(r.category + " in Category")
+        for r in sub_category_qs:
+            results.append(r.title + " in Sub-Category")
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

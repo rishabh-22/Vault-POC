@@ -4,7 +4,6 @@ from Products.models import Product
 
 def checkout(request):
     cart = request.session.get('cart', dict())
-
     prods = {k: cart_detail_to_product(v) for k, v in cart.items()}
     return render(request, 'Orders/checkout.html', context={'products': prods})
 
@@ -19,3 +18,14 @@ def cart_detail_to_product(prod_dict):
 
 def orders(request):
     return render(request, 'Orders/orders.html')
+
+#
+# def process_order(request):
+#     if request.method == 'GET':
+#         order = Order.objects.create(
+#             buyer=request.user,
+#             product=product,
+#             payment_type=payment_type,
+#             shipping_address=address,
+#
+#)
