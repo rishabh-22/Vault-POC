@@ -113,39 +113,24 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 											<ul class="multi-column-dropdown">
 												<h6> Category </h6>
 												{% for db_name, item in category_choices %}
-													{{ item }} <br>
+													<li> {{ item }} </li> <br>
 												{% endfor %}
-												<li><a href="products.html">Clothing</a></li>
+
 											</ul>
 										</div>
 										<div class="col-sm-4">
 											<ul class="multi-column-dropdown">
-												<h6>Women's Wear</h6>
-												<li><a href="products.html">Clothing</a></li>
-												<li><a href="products.html">Wallets,Bags</a></li>
-												<li><a href="products.html">Footwear</a></li>
-												<li><a href="products.html">Watches</a></li>
-												<li><a href="products.html">Accessories</a></li>
-												<li><a href="products.html">Jewellery</a></li>
-												<li><a href="products.html">Beauty & Grooming</a></li>
+
+												<h6>Sub Category</h6>
+												{% for db_name, item in sub_category_choices %}
+												<li> {{ item }} </li> <br>
+												{% endfor %}
 											</ul>
 										</div>
-										<div class="col-sm-4">
-											<ul class="multi-column-dropdown">
-												<h6>Kid's Wear</h6>
-												<li><a href="products.html">Kids Home Fashion</a></li>
-												<li><a href="products.html">Boy's Clothing</a></li>
-												<li><a href="products.html">Girl's Clothing</a></li>
-												<li><a href="products.html">Shoes</a></li>
-												<li><a href="products.html">Brand Stores</a></li>
-											</ul>
-										</div>
-										<div class="clearfix"></div>
+
 									</div>
 								</ul>
 							</li>
-
-							<li><a href="short-codes.html">About Us</a></li>
 							<li><a href="mail.html">Contact Us</a></li>
 						</ul>
 					</div>

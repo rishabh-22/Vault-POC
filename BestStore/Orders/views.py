@@ -14,5 +14,8 @@ def cart_detail_to_product(prod_dict):
     pk = copy.pop('pk')
     copy['product'] = Product.objects.get(pk=pk)
     copy['total_product_price'] = copy['product'].price * copy['qty']
-
     return copy
+
+
+def orders(request):
+    return render(request, 'Orders/orders.html')

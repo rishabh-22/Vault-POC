@@ -1,3 +1,4 @@
+from django.views.generic import ListView
 from .models import Product, Category
 from django.http import JsonResponse, Http404
 from django.shortcuts import render
@@ -12,7 +13,8 @@ def home(request):
         :param request: Django's HTTP Request object
         :return: Rendered homepage block to base template
     """
-    return render(request, "Products/homepage.html")
+    featured = Product.objects.filter(is_featured=1).order_by('-modified_date')[:3]
+    return render(request, "Products/homepage.html", {'featured_products': featured})
 
 
 def product_listings(request):
@@ -129,3 +131,18 @@ class ProductDetailView(DetailView):
         return context
 
 
+class FeaturedProduct(ListView):
+    """
+        Featured Products
+        :param: Django's List View
+        :return: Featured Page
+    """
+    model = Product
+    template_name = "Products/featured.html"
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Product model object to be used on detail page
+        context['featured'] = Product.objects.filter(is_featured=1).order_by('-modified_date')
+        return context
