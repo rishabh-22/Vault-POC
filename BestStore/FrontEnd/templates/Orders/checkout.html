@@ -1,0 +1,118 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Checkout Page</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- checkout -->
+	<div class="checkout">
+		<div class="container">
+			<h3 class="animated wow slideInLeft" data-wow-delay=".5s">Your shopping cart contains: <span>3 Products</span></h3>
+			<div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
+				<table class="timetable_sub">
+					<thead>
+						<tr>
+							<th>SL No.</th>	
+							<th>Product</th>
+							<th>Quality</th>
+							<th>Product Name</th>
+							<th>Price</th>
+							<th>Remove</th>
+						</tr>
+					</thead>
+					{% for key, data in products.items %}
+					<tr class="rem1" id='product-{{data.product.id}}'>
+						<td class="invert">{{data.product.id}}</td>
+						<td class="invert-image"><a href="single.html"><img src="{{data.product.productimages_set.first.image.url}}" alt=" " style='height: 42px !important; width: 42px !important;' class="img-responsive" /></a></td>
+						<td class="invert">
+							 <div class="quantity"> 
+								<div class="quantity-select">                           
+									<div class="entry value-minus">&nbsp;</div>
+									<div class="entry value"><span>{{data.qty}}</span></div>
+									<div class="entry value-plus active">&nbsp;</div>
+								</div>
+							</div>
+						</td>
+						<td class="invert">{{data.product.name}}</td>
+						<td class="invert">${{data.product.price}}.00</td>
+						<td class="invert">
+							<div class="rem">
+								<div class="close1" data-row-id='#product-{{data.product.id}}' data-product-price='{{data.product.price}}' data-product-qty='{{data.qty}}' data-product-pk='{{data.product.id}}' style='position: static !important; margin: auto;'> </div>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+			<div class="checkout-left">	
+				<div class="checkout-left-basket animated wow slideInLeft" data-wow-delay=".5s">
+					<h4>Continue to basket</h4>
+					<ul>
+						{% for key, data in products.items %}
+						<li>{{data.product.name}} &nbsp (qty. {{data.qty}})  <span>${{data.total_product_price}}.00</span></li>
+						{% endfor %}
+						<li style='font-weight: bold; font-size: 24px;'>Total<span>${{total_price}}.00</span></li>
+					</ul>
+				</div>
+				<div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
+					<a href="single.html"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Continue Shopping</a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+<!-- //checkout -->
+<script>
+	$(document).ready(function() {
+		$('.close1').on('click', function(evt){
+			$(evt.target.getAttribute('data-row-id')).css('display', 'none')
+			pk = evt.target.getAttribute('data-product-pk')
+			price = evt.target.getAttribute('data-product-price')
+			qty = evt.target.getAttribute('data-product-qty')
+
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+						remove_cart_items_display(parseInt(price), parseInt(qty))
+
+					}
+				}
+			};
+
+			xmlhttp.open("GET", "/api/product/cart/remove/"+pk+"/?qty="+qty);
+			xmlhttp.send();
+		});
+
+		var remove_cart_items_display = function(price, qty) {
+			current_cart_qty = parseInt(current_cart_qty) - qty
+			current_cart_price = parseInt(current_cart_price) - (qty*price)
+
+			$('#cart-qty').html(current_cart_qty)
+			$('#cart-price').html(current_cart_price)
+		}
+	});	  
+</script>
+	<!--quantity-->
+<script>
+	$('.value-plus').on('click', function(){
+		var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)+1;
+		divUpd.text(newVal);
+	});
+
+	$('.value-minus').on('click', function(){
+		var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)-1;
+		if(newVal>=1) divUpd.text(newVal);
+	});
+</script>
+	<!--quantity-->
+{% include "General/footer.html" %}
+{% endblock %}

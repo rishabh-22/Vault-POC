@@ -1,0 +1,140 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Single Page</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- single -->
+	<div class="single">
+		<div class="container">
+			<div class="col-md-4 products-left">
+				<div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
+						<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+				</div>
+				<div class="men-position animated wow slideInUp" data-wow-delay=".5s">
+					<a href="single.html"><img src="{% static 'images/29.jpg' %}" alt=" " class="img-responsive" /></a>
+					<div class="men-position-pos">
+						<h4>Summer collection</h4>
+						<h5><span>55%</span> Flat Discount</h5>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-8 single-right">
+				<div class="col-md-5 single-right-left animated wow slideInUp" data-wow-delay=".5s">
+					<div class="flexslider">
+						<ul class="slides">
+							<li data-thumb="{% static 'images/si.jpg' %}">
+									<div class="thumb-image"> <img src="{{ object.productimages_set.first.image.url }}" data-imagezoom="true" class="img-responsive"> </div>
+							</li>
+						</ul>
+					</div>
+					<!-- flixslider -->
+						<script defer src="{% static 'js/jquery.flexslider.js' %}"></script>
+						<link rel="stylesheet" href="{% static 'css/flexslider.css' %}" type="text/css" media="screen" />
+						<script>
+						// Can also be used with $(document).ready()
+						$(window).load(function() {
+						  $('.flexslider').flexslider({
+							animation: "slide",
+							controlNav: "thumbnails"
+						  });
+						});
+						</script>
+					<!-- flixslider -->
+				</div>
+				<div class="col-md-7 single-right-left simpleCart_shelfItem animated wow slideInRight" data-wow-delay=".5s">
+					<h3>{{ object.name }} </h3>
+					<h4><span class="item_price">$ {{ object.price }}</span></h4>
+					<div class="description">
+						<h5><i>Description</i></h5>
+						<p>	{{ object.description }}
+							Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+							eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+					</div>
+					<div class="color-quality">
+						<div class="color-quality-left">
+							<h5>Color : {{ object.tags.color }} </h5>
+						</div>
+						<div class="color-quality-right">
+							<h5>Quantity :</h5>
+							<select id="country1" onchange="change_country(this.value)" class="frm-field required sect">
+								{% for value in qty %}
+									<option value="null">{{ value }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+					<br> <br>
+					<div class="occasion-cart">
+						<a class="item_add" href="#">add to cart </a>
+					</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+				<div class="bootstrap-tab animated wow slideInUp" data-wow-delay=".5s">
+					<div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+						<ul id="myTab" class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Description</a></li>
+
+						</ul>
+						<div id="myTabContent" class="tab-content">
+							<div role="tabpanel" class="tab-pane fade in active bootstrap-tab-text" id="home" aria-labelledby="home-tab">
+								<h5>Product Brief Description</h5>
+								<p> {{ object.description }}
+									<span>{{ object.description }}</span></p>
+							</div>
+							<div role="tabpanel" class="tab-pane fade bootstrap-tab-text" id="profile" aria-labelledby="profile-tab">
+								<div class="bootstrap-tab-text-grids">
+									<div class="bootstrap-tab-text-grid">
+										<div class="bootstrap-tab-text-grid-left">
+											<img src="images/4.png" alt=" " class="img-responsive" />
+										</div>
+										<div class="bootstrap-tab-text-grid-right">
+											<ul>
+												<li><a href="#">Admin</a></li>
+												<li><a href="#"><span class="glyphicon glyphicon-share" aria-hidden="true"></span>Reply</a></li>
+											</ul>
+											<p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis
+												suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem
+												vel eum iure reprehenderit.</p>
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+									<div class="bootstrap-tab-text-grid">
+										<div class="bootstrap-tab-text-grid-left">
+											<img src="images/5.png" alt=" " class="img-responsive" />
+										</div>
+										<div class="bootstrap-tab-text-grid-right">
+											<ul>
+												<li><a href="#">Admin</a></li>
+												<li><a href="#"><span class="glyphicon glyphicon-share" aria-hidden="true"></span>Reply</a></li>
+											</ul>
+											<p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis
+												suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem
+												vel eum iure reprehenderit.</p>
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+<!-- //single -->
+
+{% include "General/footer.html" %}
+{% endblock %}

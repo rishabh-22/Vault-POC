@@ -1,0 +1,58 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Register Page</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- register -->
+	<div class="register">
+		<div class="container">
+			<h3 class="animated wow zoomIn" data-wow-delay=".5s" id='confirmation-title'>Register Here</h3>
+			<p class="est animated wow zoomIn" data-wow-delay=".5s" id='confirmation-message' style='display: none;'>An email verification link has been sent to the address provided.</p>
+			<div class="login-form-grids" id='register-form-container'>
+				<h5 class="animated wow slideInUp" data-wow-delay=".5s">profile information</h5>
+				<form class="animated wow slideInUp signup" data-wow-delay=".5s" onsubmit="return false;">
+					{% csrf_token %}
+					<input class='post' id='first_name' name='first_name' type="text" placeholder="First Name...">
+					<p id='error-first_name'></p>
+					<input class='post' id='last_name' name='last_name' type="text" placeholder="Last Name...">
+					<p id='error-last_name'></p>
+					<select class='post' id='gender' name='gender' style='margin-top: 14px;'>
+						<option>Male</option>
+						<option>Female</option>
+					</select>
+					<h6 class="animated wow slideInUp" id='register-logininfo' data-wow-delay=".5s">Login information</h6>
+					<input class='post' id='username' name='username' type="text" placeholder="Email Address">
+					<p id='error-username'></p>
+					<input class='post' id='password' name='password' type="password" placeholder="Password" title='8-15 characters including at least 1 lowercase and uppercase alphabetic character, 1 numeric character, and one special character (!@#$%^&).'>
+					<p id='error-password'></p>
+					<input type="password" id='secondpassword' placeholder="Password Confirmation">
+					<p id='error-confirmpassword'></p>
+					<input class='post' id='phone' name='phone' type="text" placeholder="Mobile Phone" style='margin-top: 14px;'>
+					<p id='error-phone'></p>
+					{% comment %} <div class="register-check-box">
+							<div class="check">
+								<label class="checkbox"><input type="checkbox" name="checkbox"><i> </i>I accept the terms and conditions</label>
+							</div>
+						</div> {% endcomment %}
+					<div id='response-error' style='text-align: center; color: red; margin-top: 14px;'></div>
+					<div class="loader" style='margin: auto; display: none; margin-top: 8px;'></div>
+					<input type="submit" value="Register" id='signup-button'>
+				</form>
+			</div>
+			<div class="register-home animated wow slideInUp" data-wow-delay=".5s">
+				<a href="{% url 'homepage' %}">Home</a>
+			</div>
+		</div>
+	</div>
+<!-- //register -->
+<script type="text/javascript" src="{% static 'js/register.js' %}" ></script>
+{% include "General/footer.html" %}
+{% endblock %}

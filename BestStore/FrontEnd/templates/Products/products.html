@@ -1,0 +1,86 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}	
+<body>
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Products</li>
+			</ol>
+		</div>
+	</div>
+	<div class="products">
+		<div class="container">
+			<div class="col-md-4 products-left">
+				<div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
+					<h3>Filter By Price</h3>
+					<ul class="dropdown-menu1">
+							<li><a href="">								               
+							<div id="slider-range"></div>							
+							<input type="text" id="amount" style="border: 0" />
+							</a></li>	
+					</ul>
+						<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+				</div>
+				<div class="categories animated wow slideInUp" data-wow-delay=".5s">
+					<h3>Categories</h3>
+					<ul class="cate">
+						{% for cat in category %}
+							<li><a href="products.html">{{cat.category}}</a>
+							<ul>
+							{% for subcat in cat.subcategory_set.all %}
+								<li><a href="products.html">{{subcat.title}}</a>
+							{% endfor %}
+							</ul>
+						{% endfor %}
+
+					</ul>
+				</div>
+		
+			</div>
+			<div class="col-md-8 products-right">
+				<div class="products-right-grids-bottom">
+					{% for prod in product %}
+					<div class="col-md-4 products-right-grids-bottom-grid" style='margin-bottom: 8px; margin-top: 8px;'>
+						<div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="{{prod.productimages_set.first.image.url}}" alt=" " height='42' width='42'></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a href="/products/{{prod.id}}/">Quick View</a>
+								</div>
+							</div>	
+							<h4><a href="single.html">{{prod.name}}</a></h4>
+							<div class="simpleCart_shelfItem products-right-grid1-add-cart">
+								<p style='text-align: center;'>${{prod.price}}<a data-pk="{{prod.id}}" data-price="{{prod.price}}" class="add-item" href="#">add to cart </a></p>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+					<div class="clearfix"> </div>
+				</div>
+				<nav class="numbering animated wow slideInRight" data-wow-delay=".5s">
+					<ul class="pagination paging">
+						<li>
+						<a href="{{prev}}" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+						</li>
+						{% for page_num in pages %}
+						<li><a href="/products/?page={{page_num}}">{{page_num}}</a></li>
+						{% endfor %}
+						<li>
+						<a href="{{next}}" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+
+{% include "General/footer.html" %}
+{% endblock %}
