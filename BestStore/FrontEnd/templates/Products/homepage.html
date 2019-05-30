@@ -2,11 +2,22 @@
 {% load static %}
 {% block content %}
 <!-- banner -->
+	{% if Success %}
+	<div class="alert alert-success">
+  		 Success ! You have subscribed for out newsletter
+	</div>
+	{% endif %}
+	{% if mail_exists %}
+	<div class="alert alert-danger">
+  		 Oops ! Something went wrong !
+	</div>
+	{% endif %}
+
 	<div class="banner">
 		<div class="container">
 			<div class="banner-info animated wow zoomIn" data-wow-delay=".5s">
-				<h3>Free Online Shopping</h3>
-				<h4>Up to <span>50% <i>Off/-</i></span></h4>
+				<h3>Experience the lifestyle.</h3>
+				<h4><span>Your stores.<i> Your place.</i></span></h4>
 				<div class="wmuSlider example1">
 					<div class="wmuSliderWrapper">
 						<article style="position: absolute; width: 100%; opacity: 0;">
@@ -40,14 +51,13 @@
 		</div>
 	</div>
 <!-- //banner -->
-<!-- banner-bottom -->
-	<div class="banner-bottom">
+<div class="banner-bottom">
 		<div class="container">
 			<div class="banner-bottom-grids">
 				<div class="banner-bottom-grid-left animated wow slideInLeft" data-wow-delay=".5s">
 					<div class="grid">
 						<figure class="effect-julia">
-							<img src="images/4.jpg" alt=" " class="img-responsive" />
+							<img src="{% static 'images/4.jpg' %}" alt=" " class="img-responsive" />
 							<figcaption>
 								<h3>Best <span>Store</span><i> in online shopping</i></h3>
 								<div>
@@ -62,7 +72,7 @@
 				<div class="banner-bottom-grid-left1 animated wow slideInUp" data-wow-delay=".5s">
 					<div class="banner-bottom-grid-left-grid left1-grid grid-left-grid1">
 						<div class="banner-bottom-grid-left-grid1">
-							<img src="images/1.jpg" alt=" " class="img-responsive" />
+							<img src="{% static 'images/1.jpg' %}" alt=" " class="img-responsive" />
 						</div>
 						<div class="banner-bottom-grid-left1-pos">
 							<p>Discount 45%</p>
@@ -70,7 +80,7 @@
 					</div>
 					<div class="banner-bottom-grid-left-grid left1-grid grid-left-grid1">
 						<div class="banner-bottom-grid-left-grid1">
-							<img src="images/2.jpg" alt=" " class="img-responsive" />
+							<img src="{% static 'images/2.jpg' %}" alt=" " class="img-responsive" />
 						</div>
 						<div class="banner-bottom-grid-left1-position">
 							<div class="banner-bottom-grid-left1-pos1">
@@ -82,10 +92,10 @@
 				<div class="banner-bottom-grid-right animated wow slideInRight" data-wow-delay=".5s">
 					<div class="banner-bottom-grid-left-grid grid-left-grid1">
 						<div class="banner-bottom-grid-left-grid1">
-							<img src="images/3.jpg" alt=" " class="img-responsive" />
+							<img src="{% static 'images/3.jpg' %}" alt=" " class="img-responsive" />
 						</div>
 						<div class="grid-left-grid1-pos">
-							<p>top and classic designs <span>2016 Collection</span></p>
+							<p>Clothes <span>2019 Collection</span></p>
 						</div>
 					</div>
 				</div>
@@ -97,103 +107,39 @@
 <!-- collections -->
 	<div class="new-collections">
 		<div class="container">
-			<h3 class="animated wow zoomIn" data-wow-delay=".5s">New Collections</h3>
+			<h3 class="animated wow zoomIn" data-wow-delay=".5s">Featured Collections</h3>
 			<p class="est animated wow zoomIn" data-wow-delay=".5s">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
 				deserunt mollit anim id est laborum.</p>
 			<div class="new-collections-grids">
-				<div class="col-md-3 new-collections-grid">
-					<div class="new-collections-grid1 animated wow slideInUp" data-wow-delay=".5s">
-						<div class="new-collections-grid1-image">
-							<a href="single.html" class="product-image"><img src="images/7.jpg" alt=" " class="img-responsive" /></a>
-							<div class="new-collections-grid1-image-pos">
-								<a href="single.html">Quick View</a>
-							</div>
-							<div class="new-collections-grid1-right">
-								<div class="rating">
-									<div class="rating-left">
-										<img src="images/2.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/2.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/2.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/1.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/1.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="clearfix"> </div>
-								</div>
-							</div>
-						</div>
-						<h4><a href="single.html">Formal Shirt</a></h4>
-						<p>Vel illum qui dolorem eum fugiat.</p>
-						<div class="new-collections-grid1-left simpleCart_shelfItem">
-							<p> <span class="item_price">$250</span><a class="item_add" href="#">add to cart </a></p>
-						</div>
+				<div class="col-md-3 new-collections-grid" style="width:auto; height:auto; background-color:white; overflow:scroll; overflow-x: scroll;overflow-y: hidden;">
+					{% for product in featured_products %}
+					<div class="new-collections-grid1 animated wow slideInUp" data-wow-delay=".5s"  style=" float:left; display:inline">
+					<div class="new-collections-grid1-image">
+							<a href="single.html" class="product-image">
+							<img src="{{ product.productimages_set.first.image.url }}" alt=" " class="img-responsive" height="300px" width="300px"/></a>
 					</div>
+					<h4><a href="single.html">{{ product.name }} </a></h4>
+					<p>{{ product.description }} </p>
+					<div class="new-collections-grid1-left simpleCart_shelfItem">
+						<p> <span class="item_price">$ {{ product.price }}</span></p>
+					</div>
+					</div>
+					{% endfor %}
 				</div>
-
-				<div class="col-md-3 new-collections-grid">
-					<div class="new-collections-grid1 animated wow slideInUp" data-wow-delay=".5s">
-						<div class="new-collections-grid1-image">
-							<a href="single.html" class="product-image"><img src="images/10.jpg" alt=" " class="img-responsive" /></a>
-							<div class="new-collections-grid1-image-pos">
-								<a href="single.html">Quick View</a>
-							</div>
-							<div class="new-collections-grid1-right">
-								<div class="rating">
-									<div class="rating-left">
-										<img src="images/2.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/2.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/2.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/1.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="rating-left">
-										<img src="images/1.png" alt=" " class="img-responsive" />
-									</div>
-									<div class="clearfix"> </div>
-								</div>
-							</div>
-						</div>
-						<h4><a href="single.html">Pearl & Stone Anklet</a></h4>
-						<p>Vel illum qui dolorem eum fugiat.</p>
-						<div class="new-collections-grid1-left simpleCart_shelfItem">
-							<p><span class="item_price">$120</span><a class="item_add" href="#">add to cart </a></p>
-						</div>
-					</div>
+				<a  href="{% url 'featured' %}"> View All Products </a>
 			</div>
 		</div>
 	</div>
-<!-- //collections -->
-<!-- collections-bottom -->
-	<div class="collections-bottom">
-		<div class="container">
-			<div class="collections-bottom-grids">
-				<div class="collections-bottom-grid animated wow slideInLeft" data-wow-delay=".5s">
-					<h3>45% Offer For <span>Women & Children's</span></h3>
-				</div>
-			</div>
-			<div class="newsletter animated wow slideInUp" data-wow-delay=".5s">
+
+<div class="newsletter animated wow slideInUp" data-wow-delay=".5s">
 				<h3>Newsletter</h3>
 				<p>Join us now to get all news and special offers.</p>
-				<form>
+				<form method="POST" action="/">
+					{% csrf_token %}
 					<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-					<input type="email" value="Enter your email address" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Enter your email address';}" required="">
+					<input type="email" value="Enter your email address" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Enter your email address';}" required="" name="news_letter_email">
 					<input type="submit" value="Join Us" >
 				</form>
 			</div>
-		</div>
-	</div>
-<!-- //collections-bottom -->
-		{% include "General/footer.html" %}
-        {% endblock %}
+{% include "General/footer.html" %}
+{% endblock %}

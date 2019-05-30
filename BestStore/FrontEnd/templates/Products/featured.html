@@ -1,0 +1,58 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}	
+<body>
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Products</li>
+			</ol>
+		</div>
+	</div>
+	<div class="products" >
+		<div class="container" style="border: 1px solid green;">
+				<div class="products-right-grids-bottom">
+					{% for product in featured %}
+					<div class="col-md-4 products-right-grids-bottom-grid" style='margin-bottom: 8px; margin-top: 8px;'>
+						<div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="{{product.productimages_set.first.image.url}}" alt=" " height='42' width='42'></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a href="/products/{{product.id}}/">Quick View</a>
+								</div>
+							</div>	
+							<h4><a href="single.html">{{product.name}}</a></h4>
+							<div class="simpleCart_shelfItem products-right-grid1-add-cart">
+								<p style='text-align: center;'>${{product.price}}</p>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+{% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+{% include "General/footer.html" %}
+{% endblock %}
