@@ -21,7 +21,7 @@ def home(request):
 
 def product_listings(request):
     """
-        List products via pagination
+        List products via custom pagination algorithm
         :param request: Django's HTTP Request object
         :return: Rendered product list view with pagination
     """
@@ -41,21 +41,18 @@ def product_listings(request):
         # If no products are in database then we have nothing to show the user
         if len(all_products) == 0:
             return Http404()
-        # Set count of products to display for each individual page
+        # Set appropriate values for pagination parameters
         prods_per_page = PRODUCTS_PER_PAGE
-        # Calculate total pages based on product count
         total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
-        # Override page value if it is not a number in the valid range of pages
         if page < 1:
             page = 1
         elif page > total_pages:
             page = total_pages
-        # Calculate start/end index for all_products list based on page value
         start_index = (page - 1) * prods_per_page
         end_index = start_index + prods_per_page
-        # Use index slicing to get the products which are to be displayed on the rendered template
         products = all_products[start_index: end_index]
-        # Set context variable for template to use to display the products and paginated navigation
+
+        # SANYAM PLEASE ADD A COMMENT
         if 'search' in request.GET:
             products = []
             data = request.GET['search']
@@ -71,6 +68,7 @@ def product_listings(request):
                     products_in_category = category_choice[0].subcategory_set.all()[i].product_set.all()
                     products = list(chain(products, products_in_category))
 
+        # Set context variable for template to use to display the products and paginated navigation
         info = {
             'category': all_category,
             'product': products,
@@ -84,23 +82,28 @@ def product_listings(request):
         return render(request, 'Products/products.html', context=info)
 
 
-def cart_add(request, pk):
+def cart_update(request, pk):
     """
-       Add products to card
-       :param request, pk: Django's HTTP Request object, Primary key of products to be added to cart
+       Add/Remove single product (possible multiple qty of product) to cart
+       :param   request: Django's HTTP Request object,
+                pk: Primary key of 
+                    products to be added to cart
        :return: Success message
     """
     if request.method == 'GET':
         sess = request.session
-        qty = request.GET.get('qty', 1)
-
-        sess['cart_qty'] = sess.get('cart_qty', 0) + qty
-        sess['cart'] = sess.get('cart', OrderedDict())
-
-        if sess['cart'].get(pk, False):
-            sess['cart'][pk]['qty'] += qty
-        else:
-            sess['cart'][pk] = {'qty': qty, 'pk': pk}
+        qty = request.GET.get('qty', False)
+        if qty:
+            # Initialize a cart and its qty in session if they don't exist
+            sess['cart_qty'] = sess.get('cart_qty', 0) + int(qty)
+            sess['cart'] = sess.get('cart', OrderedDict())
+            # In case the it is add to cart and product not already in cart
+            new_cart_item = {'qty': 0, 'pk': str(pk)}
+            # Update cart item quantity of new/existing item
+            sess['cart'][str(pk)] = sess['cart'].get(str(pk), new_cart_item)
+            new_qty = sess['cart'][str(pk)]['qty'] + int(qty)
+            # Sets new quantity to 0 in case quantity has gone negative
+            sess['cart'][str(pk)]['qty'] = int((abs(new_qty)+new_qty)/2)
 
         return JsonResponse({'success': True})
 
@@ -116,19 +119,15 @@ def cart_empty(request, pk=0):
 
 
 def cart_item_remove(request, pk=0):
-    """Remove a single item (possible multiple qty) from the cart"""
+    """Remove a single item (possible multiple qty of item) from the cart"""
     if request.method == 'GET' and pk > 0:
         cart = request.session['cart']
-        qty = request.GET.get('qty', False)
-
-        cart_item = cart.get(str(pk), False)
-        if cart_item:
-            cart_item['qty'] -= int(qty)
-            if cart_item['qty'] <= 0:
-                del cart[str(pk)]
-                request.session.modified = True
-        
-        return JsonResponse({'success': True})
+        try:
+            del cart[str(pk)]
+            request.session.modified = True
+            return JsonResponse({'success': True})
+        except KeyError:
+            return JsonResponse({'success': False}) 
 
 
 class ProductDetailView(DetailView):
