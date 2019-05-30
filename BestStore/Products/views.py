@@ -69,7 +69,7 @@ def product_listings(request):
         if 'search' in request.GET:
             products = []
             data = request.GET['search']
-            data_split = data.split(" in ")
+            data_split = data.split(" [ ")
             search_term = data_split[0]
             products = all_products.filter(name__icontains=search_term)
             category_choice = all_category.filter(category__icontains=search_term)
@@ -91,6 +91,7 @@ def product_listings(request):
             'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
             'search_term': search_term,
         }
+
         # Render template with context containing pagination details
         return render(request, 'Products/products.html', context=info)
 
@@ -195,12 +196,13 @@ def autocompletemodel(request):
         search_qs = list(chain(product_qs, category_qs, sub_category_qs))
         results = []
         for r in product_qs:
-            results.append(r.name + "  [ in Products ]")
+            results.append(r.name + " [ in Products]")
         for r in category_qs:
-            results.append(r.category + "  [ in Category ]")
+            results.append(r.category + " [ in Category]")
         for r in sub_category_qs:
-            results.append(r.title + "  [ in Sub-Category ]")
+            results.append(r.title + " [ in Sub-Category]")
         data = json.dumps(results)
+
     else:
         data = 'fail'
     mimetype = 'application/json'
