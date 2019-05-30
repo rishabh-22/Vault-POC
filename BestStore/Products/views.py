@@ -1,12 +1,14 @@
 import json
 from itertools import chain
+from django.contrib.auth.models import User
 from django.views.generic import ListView
 from .models import Product, Category, SubCategory, Newsletter
 from django.http import JsonResponse, Http404, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from collections import OrderedDict
-from BestStore.settings import PRODUCTS_PER_PAGE, PAGINATION_URL
+from BestStore.settings import PRODUCTS_PER_PAGE,\
+    PAGINATION_URL, EMAIL_SUBJECT, DUMMY_EMAIL
 
 
 def home(request):
@@ -16,7 +18,18 @@ def home(request):
         :return: Rendered homepage block to base template
     """
     featured = Product.objects.filter(is_featured=1).order_by('-modified_date')[:3]
-    return render(request, "Products/homepage.html", {'featured_products': featured})
+    context = {'featured_products':featured}
+    if request.method == 'POST':
+        mail = request.POST.get('news_letter_email')
+        user = Newsletter.objects.create(email=mail)
+        try:
+            User.objects.get(email=mail)
+            context['mail_exists'] = True
+        except Exception:
+            context['Success'] = True
+        user.save()
+        return render(request, "Products/homepage.html", context)
+    return render(request, "Products/homepage.html", context)
 
 
 def product_listings(request):
@@ -177,21 +190,14 @@ def autocompletemodel(request):
         search_qs = list(chain(product_qs, category_qs, sub_category_qs))
         results = []
         for r in product_qs:
-            results.append(r.name + " in Products")
+            results.append(r.name + "  [ in Products ]")
         for r in category_qs:
-            results.append(r.category + " in Category")
+            results.append(r.category + "  [ in Category ]")
         for r in sub_category_qs:
-            results.append(r.title + " in Sub-Category")
+            results.append(r.title + "  [ in Sub-Category ]")
         data = json.dumps(results)
     else:
         data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
-
-def newsletter(request):
-    if request.method == 'POST':
-        mail = request.POST.get('news_letter_email')
-        user = Newsletter.objects.create(email=mail)
-        user.save()
-        return redirect('homepage')

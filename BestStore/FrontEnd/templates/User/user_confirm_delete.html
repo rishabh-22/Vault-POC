@@ -2,10 +2,20 @@
 {% load static %}
 {% block content %}
 
-<form method="post">{% csrf_token %}
-    <p>Are you sure you want to delete "{{ object }}"?</p>
-    <input type="submit" value="Confirm">
-</form>
+<div class="register">
+		<div class="container">
+			<h3 class="animated wow zoomIn" data-wow-delay=".5s" id='confirmation-title'>Delete Profile</h3>
+			<p class="est animated wow zoomIn" data-wow-delay=".5s" id='confirmation-message' style='display: none;'>An email verification link has been sent to the address provided.</p>
+			<div class="login-form-grids" id='register-form-container'>
+
+                <form method="post">{% csrf_token %}
+                        <p>Are you sure you want to delete "{{ object }}"?</p>
+                        <input type="submit" value="Confirm">
+                    </form>
+            </div>
+        </div>
+</div>
+
 
 {% include "General/footer.html" %}
 {% endblock %}
