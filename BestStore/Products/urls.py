@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import (
-
     cart_update, cart_empty, home, product_listings, ProductDetailView, 
     cart_item_remove, FeaturedProduct, autocompletemodel
 )

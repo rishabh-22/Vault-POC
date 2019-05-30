@@ -176,11 +176,10 @@
 		if (new_qty > 0) {
 			item_checkout_price.html(new_price)
 			item_checkout_qty.html(new_qty)
-			total_checkout_price.html(new_total)
 		} else {
 			$('#checkout-item-'+pk).css('display', 'none')
 		}
-
+		total_checkout_price.html(new_total)
 	}
 
 	var update_cart_header = function(price, qty) {

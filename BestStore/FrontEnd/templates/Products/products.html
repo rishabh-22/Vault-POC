@@ -17,10 +17,10 @@
 				<div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
 					<h3>Filter By Price</h3>
 					<ul class="dropdown-menu1">
-							<li><a href="">								               
-							<div id="slider-range"></div>							
+							<li><a href="">
+							<div id="slider-range"></div>
 							<input type="text" id="amount" style="border: 0" />
-							</a></li>	
+							</a></li>
 					</ul>
 						<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 				</div>
@@ -37,7 +37,7 @@
 						{% endfor %}
 					</ul>
 				</div>
-		
+
 			</div>
 			<div class="col-md-8 products-right">
 				<div class="products-right-grids-bottom">
@@ -49,7 +49,7 @@
 								<div class="new-collections-grid1-image-pos products-right-grids-pos">
 									<a href="/products/{{prod.id}}/">Quick View</a>
 								</div>
-							</div>	
+							</div>
 							<h4><a href="single.html">{{prod.name}}</a></h4>
 							<div class="simpleCart_shelfItem products-right-grid1-add-cart">
 								<p style='text-align: center; '>${{prod.price}}<a data-pk="{{prod.id}}" data-price="{{prod.price}}" class="add-item" href="#">add to cart </a></p>
