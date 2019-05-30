@@ -82,9 +82,9 @@ def product_listings(request):
         return render(request, 'Products/products.html', context=info)
 
 
-def cart_add(request, pk):
+def cart_update(request, pk):
     """
-       Add single product (possible multiple qty of product) to cart
+       Add/Remove single product (possible multiple qty of product) to cart
        :param   request: Django's HTTP Request object,
                 pk: Primary key of 
                     products to be added to cart
@@ -92,14 +92,18 @@ def cart_add(request, pk):
     """
     if request.method == 'GET':
         sess = request.session
-        qty = request.GET.get('qty', 1)
-        # Initialize a cart and its total qty in session if they don't exist
-        sess['cart_qty'] = sess.get('cart_qty', 0) + qty
-        sess['cart'] = sess.get('cart', OrderedDict())
-
-        new_cart_item = {'qty': 0, 'pk': pk}
-        sess['cart'][pk] = sess['cart'].get(pk, new_cart_item)
-        sess['cart'][pk]['qty'] += qty
+        qty = request.GET.get('qty', False)
+        if qty:
+            # Initialize a cart and its qty in session if they don't exist
+            sess['cart_qty'] = sess.get('cart_qty', 0) + int(qty)
+            sess['cart'] = sess.get('cart', OrderedDict())
+            # In case the it is add to cart and product not already in cart
+            new_cart_item = {'qty': 0, 'pk': str(pk)}
+            # Update cart item quantity of new/existing item
+            sess['cart'][str(pk)] = sess['cart'].get(str(pk), new_cart_item)
+            new_qty = sess['cart'][str(pk)]['qty'] + int(qty)
+            # Sets new quantity to 0 in case quantity has gone negative
+            sess['cart'][str(pk)]['qty'] = int((abs(new_qty)+new_qty)/2)
 
         return JsonResponse({'success': True})
 
@@ -118,16 +122,12 @@ def cart_item_remove(request, pk=0):
     """Remove a single item (possible multiple qty of item) from the cart"""
     if request.method == 'GET' and pk > 0:
         cart = request.session['cart']
-        qty = request.GET.get('qty', False)
-
-        cart_item = cart.get(str(pk), False)
-        if cart_item:
-            cart_item['qty'] -= int(qty)
-            if cart_item['qty'] <= 0:
-                del cart[str(pk)]
-                request.session.modified = True
-        
-        return JsonResponse({'success': True})
+        try:
+            del cart[str(pk)]
+            request.session.modified = True
+            return JsonResponse({'success': True})
+        except KeyError:
+            return JsonResponse({'success': False}) 
 
 
 class ProductDetailView(DetailView):

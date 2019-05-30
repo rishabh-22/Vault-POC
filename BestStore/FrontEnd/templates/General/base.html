@@ -175,7 +175,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 					<div class="cart box_1">
 						<a href="{% url 'checkout' %}">
-							<h3> <div class="total">$<span id='cart-price'>{{total_price}}</span>.00 (<span id='cart-qty'>{{total_qty}}</span> items)</div>
+							<h3 style='padding-bottom: 6px !important;'> <div class="total">$<span id='cart-price'>{{total_price}}</span>.00 (<span id='cart-qty'>{{total_qty}}</span> items)</div>
 								<img src="{% static 'images/bag.png' %}" alt="" />
 							</h3>
 						</a>
@@ -241,7 +241,7 @@ $( document ).ready(function() {
 			}
 		};
 
-		xmlhttp.open("GET", "/api/product/cart/add/"+pk+"/");
+		xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=1");
 		xmlhttp.send();	
 	})
 

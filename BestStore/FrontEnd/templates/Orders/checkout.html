@@ -20,7 +20,7 @@
 						<tr>
 							<th>SL No.</th>	
 							<th>Product</th>
-							<th>Quality</th>
+							<th>Quantity</th>
 							<th>Product Name</th>
 							<th>Price</th>
 							<th>Remove</th>
@@ -33,9 +33,9 @@
 						<td class="invert">
 							 <div class="quantity"> 
 								<div class="quantity-select">                           
-									<div class="entry value-minus">&nbsp;</div>
-									<div class="entry value"><span>{{data.qty}}</span></div>
-									<div class="entry value-plus active">&nbsp;</div>
+									<div class="entry value-minus" data-pk='{{data.product.id}}' data-price='{{data.product.price}}'>&nbsp;</div>
+									<div class="entry value" id='{{data.product.id}}-product-qty'><span>{{data.qty}}</span></div>
+									<div class="entry value-plus active" data-max-qty='{{data.product.quantity}}' data-pk='{{data.product.id}}' data-price='{{data.product.price}}'>&nbsp;</div>
 								</div>
 							</div>
 						</td>
@@ -43,7 +43,7 @@
 						<td class="invert">${{data.product.price}}.00</td>
 						<td class="invert">
 							<div class="rem">
-								<div class="close1" data-row-id='#product-{{data.product.id}}' data-product-price='{{data.product.price}}' data-product-qty='{{data.qty}}' data-product-pk='{{data.product.id}}' style='position: static !important; margin: auto;'> </div>
+								<div class="close1" id='remove-{{data.product.id}}' data-row-id='#product-{{data.product.id}}' data-product-price='{{data.product.price}}' data-product-qty='{{data.qty}}' data-product-pk='{{data.product.id}}' style='position: static !important; margin: auto;'> </div>
 							</div>
 						</td>
 					</tr>
@@ -55,9 +55,9 @@
 					<h4>Continue Checkout</h4>
 					<ul>
 						{% for key, data in products.items %}
-						<li>{{data.product.name}} &nbsp (qty. {{data.qty}})  <span>${{data.total_product_price}}.00</span></li>
+						<li id='checkout-item-{{data.product.id}}'>{{data.product.name}} &nbsp (qty. <div id='{{data.product.id}}-checkout-qty' style='display: inline !important;'>{{data.qty}}</div>)  <span>$<div id='{{data.product.id}}-checkout-price' style='display: inline !important;'>{{data.total_product_price}}</div>.00</span></li>
 						{% endfor %}
-						<li style='font-weight: bold; font-size: 24px;'>Total<span>${{total_price}}.00</span></li>
+						<li style='font-weight: bold; font-size: 24px;'>Total<span>$<div id='checkout-box-total-price' style='display: inline !important;'>{{total_price}}</div>.00</span></li>
 					</ul>
 				</div>
 				<div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
@@ -81,17 +81,18 @@
 				if (this.readyState == 4 && this.status == 200) {
 					res = JSON.parse(this.responseText)
 					if (res['success'] === true) {
-						remove_cart_items_display(parseInt(price), parseInt(qty))
-
+						remove_cart_items_header(parseInt(price), parseInt(qty))
+						update_checkout_box(pk, parseInt(price), -parseInt(qty))
+						$(window).scrollTop(0);
 					}
 				}
 			};
 
-			xmlhttp.open("GET", "/api/product/cart/remove/"+pk+"/?qty="+qty);
+			xmlhttp.open("GET", "/api/product/cart/remove/"+pk+"/");
 			xmlhttp.send();
 		});
 
-		var remove_cart_items_display = function(price, qty) {
+		var remove_cart_items_header = function(price, qty) {
 			current_cart_qty = parseInt(current_cart_qty) - qty
 			current_cart_price = parseInt(current_cart_price) - (qty*price)
 
@@ -99,18 +100,96 @@
 			$('#cart-price').html(current_cart_price)
 		}
 	});	  
-</script>
-	<!--quantity-->
-<script>
-	$('.value-plus').on('click', function(){
+
+	$('.value-plus').on('click', function(evt){
+
 		var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)+1;
-		divUpd.text(newVal);
+		max_qty = parseInt(evt.target.getAttribute('data-max-qty'))
+		if (newVal <= max_qty) {
+			divUpd.text(newVal);
+
+			pk = evt.target.getAttribute('data-pk')
+			price = evt.target.getAttribute('data-price')
+
+			remove_element = $('#remove-'+pk)[0]
+			new_qty = parseInt(remove_element.getAttribute('data-product-qty')) + 1
+			remove_element.setAttribute('data-product-qty', new_qty)
+
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+						update_cart_header(parseInt(price), 1)
+						update_checkout_box(pk, parseInt(price), 1)
+						$(window).scrollTop(0);
+
+					}
+				}
+			};
+
+			xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=1");
+			xmlhttp.send();
+		}
 	});
 
-	$('.value-minus').on('click', function(){
+	$('.value-minus').on('click', function(evt){
 		var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)-1;
-		if(newVal>=1) divUpd.text(newVal);
+		if (newVal >= 1) { 
+			divUpd.text(newVal);
+
+			pk = evt.target.getAttribute('data-pk')
+			price = evt.target.getAttribute('data-price')
+
+			remove_element = $('#remove-'+pk)[0]
+			new_qty = parseInt(remove_element.getAttribute('data-product-qty')) - 1
+			remove_element.setAttribute('data-product-qty', new_qty)
+
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+						update_cart_header(parseInt(price), -1)
+						update_checkout_box(pk, parseInt(price), -1)
+						$(window).scrollTop(0);
+
+					}
+				}
+			};
+
+			xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=-1");
+			xmlhttp.send();
+		}
 	});
+
+	var update_checkout_box = function(pk, price, qty) {
+		item_checkout_price = $('#'+pk+'-checkout-price')
+		item_checkout_qty = $('#'+pk+'-checkout-qty')  
+		total_checkout_price = $('#checkout-box-total-price')
+
+		price_change = qty*price
+		new_price = parseInt(item_checkout_price.html()) + price_change
+		new_qty = parseInt(item_checkout_qty.html()) + qty
+		new_total = parseInt(total_checkout_price.html()) + price_change
+
+		if (new_qty > 0) {
+			item_checkout_price.html(new_price)
+			item_checkout_qty.html(new_qty)
+			total_checkout_price.html(new_total)
+		} else {
+			$('#checkout-item-'+pk).css('display', 'none')
+		}
+
+	}
+
+	var update_cart_header = function(price, qty) {
+		current_cart_qty = parseInt($('#cart-qty').html()) + qty
+		current_cart_price = parseInt($('#cart-price').html()) + (qty*price)
+		
+		$('#cart-qty').html(current_cart_qty)
+		$('#cart-price').html(current_cart_price)
+	}
 </script>
 	<!--quantity-->
 {% include "General/footer.html" %}
