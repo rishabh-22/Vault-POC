@@ -226,7 +226,6 @@ $( document ).ready(function() {
 
 	$('.add-item').click(function(evt) {
 		evt.preventDefault()
-		alert("Added Successfully ")
 		pk = evt.target.getAttribute('data-pk')
 		price = evt.target.getAttribute('data-price')
 		qty = evt.target.getAttribute('data-qty') || 1
@@ -236,6 +235,7 @@ $( document ).ready(function() {
 			if (this.readyState == 4 && this.status == 200) {
 				res = JSON.parse(this.responseText)
 				if (res['success'] === true) {
+					alert("Added Successfully ")
 					update_cart_header(parseInt(price), parseInt(qty))
 					$(window).scrollTop(0)
 				} else {

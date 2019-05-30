@@ -130,6 +130,9 @@
 
 			xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=1");
 			xmlhttp.send();
+		} else
+		{
+			alert("You have already added the max quantity of this product to your cart")
 		}
 	});
 
