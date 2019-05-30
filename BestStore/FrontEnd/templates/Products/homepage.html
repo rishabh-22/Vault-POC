@@ -119,7 +119,17 @@
 				<a  href="{% url 'featured' %}"> View All Products </a>
 			</div>
 		</div>
-
 	</div>
+
+<div class="newsletter animated wow slideInUp" data-wow-delay=".5s">
+				<h3>Newsletter</h3>
+				<p>Join us now to get all news and special offers.</p>
+				<form method="POST" action="/newsletter/">
+					{% csrf_token %}
+					<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+					<input type="email" value="Enter your email address" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Enter your email address';}" required="" name="news_letter_email">
+					<input type="submit" value="Join Us" >
+				</form>
+			</div>
 {% include "General/footer.html" %}
 {% endblock %}

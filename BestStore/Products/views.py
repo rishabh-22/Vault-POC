@@ -1,10 +1,9 @@
 import json
 from itertools import chain
-
 from django.views.generic import ListView
-from .models import Product, Category, SubCategory
+from .models import Product, Category, SubCategory, Newsletter
 from django.http import JsonResponse, Http404, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from collections import OrderedDict
 from BestStore.settings import PRODUCTS_PER_PAGE, PAGINATION_URL
@@ -171,7 +170,6 @@ class FeaturedProduct(ListView):
 
 def autocompletemodel(request):
     if request.is_ajax():
-
         q = request.GET.get('term', '')
         product_qs = Product.objects.filter(name__icontains=q)
         category_qs = Category.objects.filter(category__icontains=q)
@@ -189,3 +187,11 @@ def autocompletemodel(request):
         data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def newsletter(request):
+    if request.method == 'POST':
+        mail = request.POST.get('news_letter_email')
+        user = Newsletter.objects.create(email=mail)
+        user.save()
+        return redirect('homepage')

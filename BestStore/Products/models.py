@@ -86,4 +86,7 @@ class ProductImages(models.Model):
 #     quantity = models.IntegerField()
 #
 
+class Newsletter(models.Model):
+    email = models.EmailField(max_length=70, null=False)
+
 

@@ -226,6 +226,7 @@ $( document ).ready(function() {
 
 
 	$('.add-item').click(function(evt) {
+		console.log('yoyoyoyo')
 		evt.preventDefault()
 		pk = evt.target.getAttribute('data-pk')
 		price = evt.target.getAttribute('data-price')
@@ -247,13 +248,8 @@ $( document ).ready(function() {
 	})
 
 	var update_cart_header = function(price, qty) {
-		if (add) {
-			current_cart_qty = parseInt(current_cart_qty) + qty
-			current_cart_price = parseInt(current_cart_price) + (qty*price)
-		} else {
-			current_cart_qty = parseInt(current_cart_qty) - qty
-			current_cart_price = parseInt(current_cart_price) - (qty*price)	
-		}
+		current_cart_qty = parseInt(current_cart_qty) + qty
+		current_cart_price = parseInt(current_cart_price) + (qty*price)
 
 		$('#cart-qty').html(current_cart_qty)
 		$('#cart-price').html(current_cart_price)
