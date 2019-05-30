@@ -115,10 +115,16 @@ def cart_update(request, pk):
             # Update cart item quantity of new/existing item
             sess['cart'][str(pk)] = sess['cart'].get(str(pk), new_cart_item)
             new_qty = sess['cart'][str(pk)]['qty'] + int(qty)
-            # Sets new quantity to 0 in case quantity has gone negative
-            sess['cart'][str(pk)]['qty'] = int((abs(new_qty)+new_qty)/2)
-
-        return JsonResponse({'success': True})
+            new_qty_above_max = Product.objects.get(pk=pk).quantity < new_qty
+            if not new_qty_above_max:
+                # Sets new quantity to 0 in case quantity has gone negative
+                sess['cart'][str(pk)]['qty'] = int((abs(new_qty)+new_qty)/2)
+                return JsonResponse({'success': True})
+            return JsonResponse({
+                'success': False, 
+                'msg': 'Max quantity of this product has already been added.'
+            })
+        
 
 
 def cart_empty(request, pk=0):
