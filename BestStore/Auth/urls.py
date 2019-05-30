@@ -1,10 +1,5 @@
 from django.urls import path
-from .views import user_login
-from .views import logout_view
-from .views import register_user
-from .views import verify_user_email
-from .views import render_login_form
-from .views import render_register_form
+from .views import user_login, logout_view, register_user, verify_user_email, render_login_form, render_register_form
 
 urlpatterns = [
     path('logout/', logout_view, name='logout'),

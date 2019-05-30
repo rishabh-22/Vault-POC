@@ -1,0 +1,132 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+
+<h3 class="title animated wow zoomIn" data-wow-delay=".5s">{{ firstname }} 's Orders</h3>
+
+<div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
+				<table class="timetable_sub">
+					<thead>
+						<tr>
+							<th>SL No.</th>
+							<th>Product</th>
+							<th>Quality</th>
+							<th>Product Name</th>
+							<th>Service Charges</th>
+							<th>Price</th>
+							<th>Remove</th>
+						</tr>
+					</thead>
+					<tr class="rem1">
+						<td class="invert">1</td>
+						<td class="invert-image"><a href="single.html"><img src="images/22.jpg" alt=" " class="img-responsive" /></a></td>
+						<td class="invert">
+							 <div class="quantity">
+								<div class="quantity-select">
+									<div class="entry value-minus">&nbsp;</div>
+									<div class="entry value"><span>1</span></div>
+									<div class="entry value-plus active">&nbsp;</div>
+								</div>
+							</div>
+						</td>
+						<td class="invert">Black Shoe</td>
+						<td class="invert">$5.00</td>
+						<td class="invert">$290.00</td>
+						<td class="invert">
+							<div class="rem">
+								<div class="close1"> </div>
+							</div>
+							<script>$(document).ready(function(c) {
+								$('.close1').on('click', function(c){
+									$('.rem1').fadeOut('slow', function(c){
+										$('.rem1').remove();
+									});
+									});
+								});
+						   </script>
+						</td>
+					</tr>
+					<tr class="rem2">
+						<td class="invert">2</td>
+						<td class="invert-image"><a href="single.html"><img src="images/30.jpg" alt=" " class="img-responsive" /></a></td>
+						<td class="invert">
+							 <div class="quantity">
+								<div class="quantity-select">
+									<div class="entry value-minus">&nbsp;</div>
+									<div class="entry value"><span>1</span></div>
+									<div class="entry value-plus active">&nbsp;</div>
+								</div>
+							</div>
+						</td>
+						<td class="invert">Centre Table</td>
+						<td class="invert">$5.00</td>
+						<td class="invert">$250.00</td>
+						<td class="invert">
+							<div class="rem">
+								<div class="close2"> </div>
+							</div>
+							<script>$(document).ready(function(c) {
+								$('.close2').on('click', function(c){
+									$('.rem2').fadeOut('slow', function(c){
+										$('.rem2').remove();
+									});
+									});
+								});
+						   </script>
+						</td>
+					</tr>
+					<tr class="rem3">
+						<td class="invert">3</td>
+						<td class="invert-image"><a href="single.html"><img src="images/11.jpg" alt=" " class="img-responsive" /></a></td>
+						<td class="invert">
+							 <div class="quantity">
+								<div class="quantity-select">
+									<div class="entry value-minus">&nbsp;</div>
+									<div class="entry value"><span>1</span></div>
+									<div class="entry value-plus active">&nbsp;</div>
+								</div>
+							</div>
+						</td>
+						<td class="invert">Stone Bangles</td>
+						<td class="invert">$5.00</td>
+						<td class="invert">$299.00</td>
+						<td class="invert">
+							<div class="rem">
+								<div class="close3"> </div>
+							</div>
+							<script>$(document).ready(function(c) {
+								$('.close3').on('click', function(c){
+									$('.rem3').fadeOut('slow', function(c){
+										$('.rem3').remove();
+									});
+									});
+								});
+						   </script>
+						</td>
+					</tr>
+								<!--quantity-->
+									<script>
+									$('.value-plus').on('click', function(){
+										var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)+1;
+										divUpd.text(newVal);
+									});
+
+									$('.value-minus').on('click', function(){
+										var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)-1;
+										if(newVal>=1) divUpd.text(newVal);
+									});
+									</script>
+								<!--quantity-->
+				</table>
+			</div>
+
+
+<br>
+<br>
+<br>
+
+
+
+
+{% include "General/footer.html" %}
+{% endblock %}
