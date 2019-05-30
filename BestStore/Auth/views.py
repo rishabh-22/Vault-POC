@@ -1,6 +1,6 @@
 import json
 from socket import gaierror
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.core.mail import send_mail
