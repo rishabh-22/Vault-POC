@@ -228,20 +228,22 @@ $( document ).ready(function() {
 		evt.preventDefault()
 		pk = evt.target.getAttribute('data-pk')
 		price = evt.target.getAttribute('data-price')
+		qty = evt.target.getAttribute('data-qty') || 1
 
 		var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				res = JSON.parse(this.responseText)
 				if (res['success'] === true) {
-					update_cart_header(parseInt(price), 1)
-					$(window).scrollTop(0);
-
+					update_cart_header(parseInt(price), parseInt(qty))
+					$(window).scrollTop(0)
+				} else {
+					alert(res['msg'])
 				}
 			}
 		};
 
-		xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=1");
+		xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty="+qty);
 		xmlhttp.send();	
 	})
 

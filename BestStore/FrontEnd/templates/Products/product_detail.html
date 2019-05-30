@@ -65,9 +65,9 @@
 						</div>
 						<div class="color-quality-right">
 							<h5>Quantity :</h5>
-							<select id="country1" onchange="change_country(this.value)" class="frm-field required sect">
+							<select id="country1" onchange='update_qty(this.value)' class="frm-field required sect">
 								{% for value in qty %}
-									<option value="null">{{ value }}</option>
+									<option class='qty-select-value' value="{{value}}">{{ value }}</option>
 								{% endfor %}
 							</select>
 						</div>
@@ -75,7 +75,7 @@
 					</div>
 					<br> <br>
 					<div class="occasion-cart">
-						<a class="item_add" href="#">add to cart </a>
+						<a class="add-item" data-pk="{{object.id}}" data-product-detail='true' data-price="{{object.price}}" data-qty="1" href="#">add to cart </a>
 					</div>
 						<div class="clearfix"> </div>
 					</div>
@@ -135,6 +135,11 @@
 		</div>
 	</div>
 <!-- //single -->
+<script type='text/javascript'>
+	function update_qty(val) {
+		$('.add-item')[0].setAttribute('data-qty', val)
+	}
+</script>
 
 {% include "General/footer.html" %}
 {% endblock %}
