@@ -22,7 +22,7 @@
 							<th>Product</th>
 							<th>Quantity</th>
 							<th>Product Name</th>
-							<th>Price</th>
+							<th>Product Price</th>
 							<th>Remove</th>
 						</tr>
 					</thead>
@@ -55,7 +55,7 @@
 					<h4>Continue Checkout</h4>
 					<ul>
 						{% for key, data in products.items %}
-						<li id='checkout-item-{{data.product.id}}'>{{data.product.name}} &nbsp (qty. <div id='{{data.product.id}}-checkout-qty' style='display: inline !important;'>{{data.qty}}</div>)  <span>$<div id='{{data.product.id}}-checkout-price' style='display: inline !important;'>{{data.total_product_price}}</div>.00</span></li>
+						<li class='checkout-box-items' id='checkout-item-{{data.product.id}}'>{{data.product.name}} &nbsp (qty. <div id='{{data.product.id}}-checkout-qty' style='display: inline !important;'>{{data.qty}}</div>)  <span>$<div id='{{data.product.id}}-checkout-price' style='display: inline !important;'>{{data.total_product_price}}</div>.00</span></li>
 						{% endfor %}
 						<li style='font-weight: bold; font-size: 24px;'>Total<span>$<div id='checkout-box-total-price' style='display: inline !important;'>{{total_price}}</div>.00</span></li>
 					</ul>
