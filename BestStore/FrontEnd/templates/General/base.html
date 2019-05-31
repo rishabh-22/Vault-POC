@@ -205,8 +205,8 @@ $( document ).ready(function() {
 					empty_cart_header(0, 0)
 					current_cart_qty = 0
 					current_cart_price = 0
+					empty_checkout_box()
 					$(window).scrollTop(0);
-
 				}
 			}
 		};
@@ -262,6 +262,16 @@ $( document ).ready(function() {
 			$('#cart-price').html('0')
 		}
 		$('.rem1').css('display', 'none')
+	}
+
+	function empty_checkout_box() {
+		var checkout_items = $('.checkout-box-items')
+		if (checkout_items.length > 0) {
+			for (i=0; i<checkout_items.length; i++) {
+				$(checkout_items[i]).css('display', 'none')
+			}
+			$('#checkout-box-total-price').html('0')
+		}
 	}
 
 });
