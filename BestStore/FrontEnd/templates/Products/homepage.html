@@ -53,16 +53,6 @@
 <!-- //banner -->
 
 
-
-						<ul>
-							{% for subcat in cat.subcategory_set.all %}
-							<li><a class="filter_value" href="/products/?search={{subcat.title}}" name="filter_value" value="{{ subcat.title }}">{{ subcat.title }}</a></li>
-							{% endfor %}
-						</ul>
-
-				</form>
-			</div>
-
 <div class="banner-bottom">
 		<div class="container">
 			<div class="banner-bottom-grids">
@@ -85,14 +75,15 @@
 
 					</div>
 				</div>
+
 				<div class="banner-bottom-grid-left1 animated wow slideInUp" data-wow-delay=".5s">
 					<div class="banner-bottom-grid-left-grid left1-grid grid-left-grid1">
-						<div class="banner-bottom-grid-left-grid1">
-							<img src="{% static 'images/1.jpg' %}" alt=" " class="img-responsive" />
+						<div class="banner-bottom-grid-left-grid1" style="background:gray; opacity:0.5">
+							<img src="{% static 'images/iphone.png' %}" alt=" " class="img-responsive" width="150px" />
 						</div>
-						<div class="banner-bottom-grid-left1-pos">
-
-							<a class="filter_value" href="/products/?search=Electronic" name="filter_value" value="Electronic"><p>Discount Coming soon!</p></a>
+						<div class="banner-bottom-grid-left1-pos" >
+							<a class="filter_value" href="/products/?search=Electronic" name="filter_value" value="Electronic">
+								<p style="color:black">Discount Coming soon!</p></a>
 						</div>
 					</div>
 					<div class="banner-bottom-grid-left-grid left1-grid grid-left-grid1">
@@ -101,7 +92,8 @@
 						</div>
 						<div class="banner-bottom-grid-left1-position">
 							<div class="banner-bottom-grid-left1-pos1">
-								<p>Latest New Collections</p>
+								<a class="filter_value" href="/products/?search=Electronic" name="filter_value" value="Electronic">
+									<p style="color:black">Latest New Collections</p></a>
 							</div>
 						</div>
 					</div>
@@ -109,10 +101,11 @@
 				<div class="banner-bottom-grid-right animated wow slideInRight" data-wow-delay=".5s">
 					<div class="banner-bottom-grid-left-grid grid-left-grid1">
 						<div class="banner-bottom-grid-left-grid1">
-							<img src="{% static 'images/3.jpg' %}" alt=" " class="img-responsive" />
+							<img src="{% static 'images/kids.jpg' %}" alt=" " class="img-responsive" height="200px" />
 						</div>
 						<div class="grid-left-grid1-pos">
-							<p>Clothes <span>2019 Collection</span></p>
+							<a class="filter_value" href="/products/?search=kid" name="filter_value" value="kid">
+								<p style="color:black">Latest New Collections</p></a>
 						</div>
 					</div>
 				</div>
@@ -120,44 +113,74 @@
 			</div>
 		</div>
 	</div>
+
 <!-- //banner-bottom -->
 <!-- collections -->
-	<div class="new-collections">
-		<div class="container">
-			<h3 class="animated wow zoomIn" data-wow-delay=".5s">Featured Collections</h3>
-			<p class="est animated wow zoomIn" data-wow-delay=".5s">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-				deserunt mollit anim id est laborum.</p>
-			<div class="new-collections-grids">
-				<div class="col-md-3 new-collections-grid" style="width:auto; height:auto; background-color:white; overflow:scroll; overflow-x: scroll;overflow-y: hidden;">
+<!--	<div class="new-collections">-->
+<!--		<div class="container">-->
+<!--			<h3 class="animated wow zoomIn" data-wow-delay=".5s">Featured Collections</h3>-->
+<!--			<p class="est animated wow zoomIn" data-wow-delay=".5s">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia-->
+<!--				deserunt mollit anim id est laborum.</p>-->
+<!--			<div class="new-collections-grids">-->
+<!--				<div class="col-md-3 new-collections-grid" style="width:auto; height:auto; background-color:white; overflow:scroll; overflow-x: scroll;overflow-y: hidden;">-->
+<!--					{% for product in featured_products %}-->
+<!--					<div class="new-collections-grid1 animated wow slideInUp" data-wow-delay=".5s"  style=" float:left; display:inline">-->
+<!--					<div class="new-collections-grid1-image" style="height:200px; width: 200px; border:1px solid red">-->
+<!--							<a href="single.html" class="product-image">-->
+<!--							<img src="{{ product.productimages_set.first.image.url }}" alt=" " class="img-responsive" style="object-fit:cover;"/></a>-->
+<!--					</div>-->
+<!--					<h4><a href="single.html">{{ product.name }} </a></h4>-->
+<!--					<p>{{ product.description }} </p>-->
+<!--					<div class="new-collections-grid1-left simpleCart_shelfItem">-->
+<!--						<p> <span class="item_price">$ {{ product.price }}</span></p>-->
+<!--						<a href="/products/{{product.id}}/">Quick View</a>-->
+<!--					</div>-->
+<!--					</div>-->
+<!--					{% endfor %}-->
+<!--				</div>-->
+<!--				<a  href="{% url 'featured' %}"> View All Products </a>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+<div class="new-collections">
+			<div class="container">
+				<div id="products_display">
 					{% for product in featured_products %}
-					<div class="new-collections-grid1 animated wow slideInUp" data-wow-delay=".5s"  style=" float:left; display:inline">
-					<div class="new-collections-grid1-image">
-							<a href="single.html" class="product-image">
-							<img src="{{ product.productimages_set.first.image.url }}" alt=" " class="img-responsive" height="300px" width="300px"/></a>
-					</div>
-					<h4><a href="single.html">{{ product.name }} </a></h4>
-					<p>{{ product.description }} </p>
-					<div class="new-collections-grid1-left simpleCart_shelfItem">
-						<p> <span class="item_price">$ {{ product.price }}</span></p>
-					</div>
+					<div class="col-md-4 products-right-grids-bottom-grid" style='margin-bottom: 8px; margin-top: 8px;'>
+						<div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="{{product.productimages_set.first.image.url}}" alt=" " height='170' width='200'></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a href="/products/{{product.id}}/" style="margin-left: 44px !important;">Quick View</a>
+								</div>
+							</div>
+							<h4><a href="single.html">{{product.name}}</a></h4>
+							<div class="simpleCart_shelfItem products-right-grid1-add-cart">
+								<p style='text-align: center;'>${{product.price}}<a data-pk="{{product.id}}" data-price="{{product.price}}" class="add-item" href="#">add to cart </a></p>
+							</div>
+						</div>
 					</div>
 					{% endfor %}
+					<a  href="{% url 'featured' %}"> View All Products </a>
+
 				</div>
-				<a  href="{% url 'featured' %}"> View All Products </a>
-			</div>
-		</div>
-	</div>
+
+			</div></div>
 
 <div class="newsletter animated wow slideInUp" data-wow-delay=".5s">
 				<h3>Newsletter</h3>
 				<p>Join us now to get all news and special offers.</p>
+			<form action="/" method="post">
+	</form>
 				<form method="POST" action="/">
 					{% csrf_token %}
 					<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
 					<input type="email" value="Enter your email address" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Enter your email address';}" required="" name="news_letter_email">
 					<input type="submit" value="Join Us" >
 				</form>
-			</div>
+
+</div>
+
 
 		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

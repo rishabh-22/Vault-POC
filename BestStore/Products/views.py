@@ -1,5 +1,7 @@
 import json
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.views.generic import ListView
 from .models import Product, Category, SubCategory, Newsletter
 from django.http import JsonResponse, Http404, HttpResponse
@@ -19,18 +21,29 @@ def home(request):
     """
     featured = Product.objects.filter(is_featured=1).order_by('-modified_date')[:3]
     all_category = Category.objects.all()
-
     context = {'featured_products': featured, 'category': all_category}
+
     # Save newsletter information
     if request.method == 'POST':
+        import pdb;
+        pdb.set_trace()
         mail = request.POST.get('news_letter_email')
         user = Newsletter.objects.create(email=mail)
+
         try:
             User.objects.get(email=mail)
             context['mail_exists'] = True
         except Exception:
             context['Success'] = True
         user.save()
+        plain_message = "Successfully Subscribed to our news letter!"
+        html_message = render_to_string('General/email.html')
+        send_mail(EMAIL_SUBJECT,
+                  plain_message,
+                  DUMMY_EMAIL,
+                  [mail],
+                  html_message=html_message,
+                  fail_silently=False)
         return render(request, "Products/homepage.html", context)
     return render(request, "Products/homepage.html", context)
 

@@ -129,17 +129,26 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 											<ul class="multi-column-dropdown">
 												<h6> Category </h6>
 												{% for db_name, item in category_choices %}
-													<li> {{ item }} </li> <br>
+												<li>
+													<a class="filter_value" href="/products/?search={{ item }}" name="filter_value" value="{{item}}">
+														{{ item }}
+													</a>
+												</li>
+												<br>
 												{% endfor %}
-
 											</ul>
 										</div>
 										<div class="col-sm-4">
 											<ul class="multi-column-dropdown">
 
-												<h6>Sub Category</h6>
+												<h6>Tags</h6>
 												{% for db_name, item in sub_category_choices %}
-												<li> {{ item }} </li> <br>
+
+													<li>
+														<a class="filter_value" href="/products/?search={{ item }}" name="filter_value" value="{{ item }}">
+															{{ item }}
+														</a>
+													</li>
 												{% endfor %}
 											</ul>
 										</div>
