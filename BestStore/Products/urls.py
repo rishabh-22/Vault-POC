@@ -1,8 +1,9 @@
 from django.urls import path
 from .views import (
     cart_update, cart_empty, home, product_listings, ProductDetailView, 
-    cart_item_remove, FeaturedProduct, autocompletemodel, newsletter
+    cart_item_remove, FeaturedProduct, auto_complete, filter_listings
 )
+
 
 urlpatterns = [
     path('', home, name="homepage"),
@@ -13,6 +14,7 @@ urlpatterns = [
     path('api/product/cart/empty/<int:pk>/', cart_empty, name='cart-empty'),
     path('api/product/cart/remove/<int:pk>/', cart_item_remove, name='cart-item-remove'),
     path('featured/', FeaturedProduct.as_view(), name='featured'),
-    path('ajax/search/', autocompletemodel, name='auto'),
-    path('newsletter/', newsletter, name='newsletter'),
+    path('ajax/search/', auto_complete, name='auto'),
+    path('products/filter/', filter_listings, name='filter'),
+
 ]

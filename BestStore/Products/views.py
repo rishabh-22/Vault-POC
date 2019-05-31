@@ -1,12 +1,14 @@
 import json
-from itertools import chain
+from django.contrib.auth.models import User
 from django.views.generic import ListView
 from .models import Product, Category, SubCategory, Newsletter
 from django.http import JsonResponse, Http404, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from collections import OrderedDict
-from BestStore.settings import PRODUCTS_PER_PAGE, PAGINATION_URL
+from BestStore.settings import PRODUCTS_PER_PAGE,\
+    PAGINATION_URL, EMAIL_SUBJECT, DUMMY_EMAIL
+from .helper import *
 
 
 def home(request):
@@ -16,7 +18,21 @@ def home(request):
         :return: Rendered homepage block to base template
     """
     featured = Product.objects.filter(is_featured=1).order_by('-modified_date')[:3]
-    return render(request, "Products/homepage.html", {'featured_products': featured})
+    all_category = Category.objects.all()
+
+    context = {'featured_products': featured, 'category': all_category}
+    # Save newsletter information
+    if request.method == 'POST':
+        mail = request.POST.get('news_letter_email')
+        user = Newsletter.objects.create(email=mail)
+        try:
+            User.objects.get(email=mail)
+            context['mail_exists'] = True
+        except Exception:
+            context['Success'] = True
+        user.save()
+        return render(request, "Products/homepage.html", context)
+    return render(request, "Products/homepage.html", context)
 
 
 def product_listings(request):
@@ -51,23 +67,9 @@ def product_listings(request):
         start_index = (page - 1) * prods_per_page
         end_index = start_index + prods_per_page
         products = all_products[start_index: end_index]
-
-        # SANYAM PLEASE ADD A COMMENT
+        # Search functionality
         if 'search' in request.GET:
-            products = []
-            data = request.GET['search']
-            data_split = data.split(" in ")
-            search_term = data_split[0]
-            products = all_products.filter(name__icontains=search_term)
-            category_choice = all_category.filter(category__icontains=search_term)
-            sub_category_choice = all_sub_category.filter(title__icontains=search_term)
-            if sub_category_choice:
-                products = sub_category_choice[0].product_set.all()
-            if category_choice:
-                for i in range(0, len(category_choice[0].subcategory_set.all())):
-                    products_in_category = category_choice[0].subcategory_set.all()[i].product_set.all()
-                    products = list(chain(products, products_in_category))
-
+            products = check_search(request, all_products, all_category, all_sub_category)
         # Set context variable for template to use to display the products and paginated navigation
         info = {
             'category': all_category,
@@ -78,6 +80,7 @@ def product_listings(request):
             'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
             'search_term': search_term,
         }
+
         # Render template with context containing pagination details
         return render(request, 'Products/products.html', context=info)
 
@@ -111,7 +114,6 @@ def cart_update(request, pk):
                 'success': False, 
                 'msg': 'Max quantity of this product has already been added.'
             })
-        
 
 
 def cart_empty(request, pk=0):
@@ -173,20 +175,20 @@ class FeaturedProduct(ListView):
         return context
 
 
-def autocompletemodel(request):
+def auto_complete(request):
+    # Search auto complete functionality
     if request.is_ajax():
-        q = request.GET.get('term', '')
-        product_qs = Product.objects.filter(name__icontains=q)
-        category_qs = Category.objects.filter(category__icontains=q)
-        sub_category_qs = SubCategory.objects.filter(title__icontains=q)
-        search_qs = list(chain(product_qs, category_qs, sub_category_qs))
+        term = request.GET.get('term', '')
+        product_set = Product.objects.filter(name__icontains=term)
+        category_set = Category.objects.filter(category__icontains=term)
+        sub_category_set = SubCategory.objects.filter(title__icontains=term)
         results = []
-        for r in product_qs:
-            results.append(r.name + " in Products")
-        for r in category_qs:
-            results.append(r.category + " in Category")
-        for r in sub_category_qs:
-            results.append(r.title + " in Sub-Category")
+        for result in product_set:
+            results.append(result.name + " [ in Products]")
+        for result in category_set:
+            results.append(result.category + " [ in Category]")
+        for result in sub_category_set:
+            results.append(result.title + " [ in Sub-Category]")
         data = json.dumps(results)
     else:
         data = 'fail'
@@ -194,9 +196,53 @@ def autocompletemodel(request):
     return HttpResponse(data, mimetype)
 
 
-def newsletter(request):
-    if request.method == 'POST':
-        mail = request.POST.get('news_letter_email')
-        user = Newsletter.objects.create(email=mail)
-        user.save()
-        return redirect('homepage')
+def filter_listings(request):
+    if request.method == 'GET':
+        try:
+            page = int(request.GET.get('page', 1))
+        except:
+            page = 1
+        products_list = []
+        products_by_price = []
+        all_category = Category.objects.all()
+        all_products = Product.objects.all()
+        all_sub_category = SubCategory.objects.all()
+        prods_per_page = 6
+        total_pages = ((abs(len(all_products))-1)//prods_per_page) + 1
+        filter_value = request.GET.get('filter_value', None)
+
+        if filter_value:
+            category_filter = all_category.filter(category__icontains=filter_value)
+            sub_category_filter = all_sub_category.filter(title__icontains=filter_value)
+        else:
+            category_filter = all_category.filter(category__icontains="Electronics")
+            sub_category_filter = all_sub_category.filter(title__icontains="mobile")
+
+        if category_filter:
+            for i in range(0, len(category_filter[0].subcategory_set.all())):
+                products_in_category = category_filter[0].subcategory_set.all()[i].product_set.all()
+                products_list = list(chain(products_list, products_in_category))
+        if sub_category_filter:
+            products_list = sub_category_filter[0].product_set.all()
+        min_value = request.GET.get('min_value')
+        max_value = request.GET.get('max_value')
+        price_filter = all_products.filter(price__range=(min_value, max_value))
+        for i in range(0, len(price_filter)):
+            products_by_price.append(price_filter[i])
+        products = set(products_list)
+        products_by_price_set = set(products_by_price)
+        products = products.intersection(products_by_price_set)
+        if products:
+            info = {
+                'category': all_category,
+                'product': products,
+                'pages': range(1, total_pages + 1),
+                'current_page': page,
+                'prev': f'/products/?page={page - 1}' if page != 1 else '#',
+                'next': f'/products/?page={page + 1}' if page != total_pages else '#',
+            }
+        else:
+            info = {
+                'message': "No products found!"
+            }
+    return render(request, 'Products/product_listings.html', context=info)
