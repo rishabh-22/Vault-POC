@@ -18,7 +18,9 @@ def home(request):
         :return: Rendered homepage block to base template
     """
     featured = Product.objects.filter(is_featured=1).order_by('-modified_date')[:3]
-    context = {'featured_products':featured}
+    all_category = Category.objects.all()
+
+    context = {'featured_products': featured, 'category': all_category}
     # Save newsletter information
     if request.method == 'POST':
         mail = request.POST.get('news_letter_email')
@@ -193,3 +195,54 @@ def auto_complete(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
+
+def filter_listings(request):
+    if request.method == 'GET':
+        try:
+            page = int(request.GET.get('page', 1))
+        except:
+            page = 1
+        products_list = []
+        products_by_price = []
+        all_category = Category.objects.all()
+        all_products = Product.objects.all()
+        all_sub_category = SubCategory.objects.all()
+        prods_per_page = 6
+        total_pages = ((abs(len(all_products))-1)//prods_per_page) + 1
+        filter_value = request.GET.get('filter_value', None)
+
+        if filter_value:
+            category_filter = all_category.filter(category__icontains=filter_value)
+            sub_category_filter = all_sub_category.filter(title__icontains=filter_value)
+        else:
+            category_filter = all_category.filter(category__icontains="Electronics")
+            sub_category_filter = all_sub_category.filter(title__icontains="mobile")
+
+        if category_filter:
+            for i in range(0, len(category_filter[0].subcategory_set.all())):
+                products_in_category = category_filter[0].subcategory_set.all()[i].product_set.all()
+                products_list = list(chain(products_list, products_in_category))
+        if sub_category_filter:
+            products_list = sub_category_filter[0].product_set.all()
+        min_value = request.GET.get('min_value')
+        max_value = request.GET.get('max_value')
+        price_filter = all_products.filter(price__range=(min_value, max_value))
+        for i in range(0, len(price_filter)):
+            products_by_price.append(price_filter[i])
+        products = set(products_list)
+        products_by_price_set = set(products_by_price)
+        products = products.intersection(products_by_price_set)
+        if products:
+            info = {
+                'category': all_category,
+                'product': products,
+                'pages': range(1, total_pages + 1),
+                'current_page': page,
+                'prev': f'/products/?page={page - 1}' if page != 1 else '#',
+                'next': f'/products/?page={page + 1}' if page != total_pages else '#',
+            }
+        else:
+            info = {
+                'message': "No products found!"
+            }
+    return render(request, 'Products/product_listings.html', context=info)

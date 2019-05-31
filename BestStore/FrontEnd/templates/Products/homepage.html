@@ -51,6 +51,52 @@
 		</div>
 	</div>
 <!-- //banner -->
+<div class="products">
+	<div class="container">
+		<div class="col-md-4 products-left">
+			<div class="categories animated wow slideInUp" data-wow-delay=".5s">
+				<h3>Categories</h3>
+				<form method="get">
+					<ul class="cate">
+						{% for cat in category %}
+						<li><a class="filter_value" href="/products/?search={{cat.category}}" name="filter_value" value="{{ cat.category }}">{{ cat.category }}</a></li>
+						<ul>
+							{% for subcat in cat.subcategory_set.all %}
+							<li><a class="filter_value" href="/products/?search={{subcat.title}}" name="filter_value" value="{{ subcat.title }}">{{ subcat.title }}</a></li>
+							{% endfor %}
+						</ul>
+						{% endfor %}
+				</form>
+			</div>
+			<div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
+				<h3>Filter By Price</h3>
+				<ul class="dropdown-menu1" style="text-align: center">
+					<div id="price_range" >
+						<div class="dropdown" style="display: inline;">
+							<select class="dropdown-value btn btn-default dropdown-toggle" data-toggle="dropdown" id="min_val">
+								<option value="0" selected> $ 0</option>
+								<option value="100"> $ 100</option>
+								<option value="1000"> $ 1,000</option>
+								<option value="5000"> $ 5,000</option>
+							</select>
+						</div>
+						to
+						<div class="dropdown" style="display: inline">
+							<select class="dropdown-value btn btn-default dropdown-toggle" data-toggle="dropdown" id="max_val">
+								<option value="100"> $ 100</option>
+								<option value="1000"> $ 1,000</option>
+								<option value="5001"> $ 5,000</option>
+								<option value="10000"> $ 10,000</option>
+								<option value="10000"> $ 50,000</option>
+								<option value="100000" selected> $ 1,00,000</option>
+							</select>
+						</div>
+
+					</div>
+				</ul>
+
+			</div>
+		</div>
 <div class="banner-bottom">
 		<div class="container">
 			<div class="banner-bottom-grids">
@@ -141,5 +187,30 @@
 					<input type="submit" value="Join Us" >
 				</form>
 			</div>
+
+		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+<script>
+        $(document).ready(function(){
+			$("#min_val, #max_val, .filter_value").click(function(){
+				var filter_value = $(this).html();
+				$.ajax({
+					url: '/products/filter',
+					data:{
+						'min_value': $('#min_val option:selected').val(),
+						'max_value': $('#max_val option:selected').val(),
+						'filter_value': filter_value
+					},
+					method : 'GET',
+					success: function(response) {
+						$("#products_display").html(response);
+					}
+				});
+			});
+        });
+</script>
 {% include "General/footer.html" %}
 {% endblock %}
