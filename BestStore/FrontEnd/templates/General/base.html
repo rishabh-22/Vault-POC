@@ -68,8 +68,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     margin-left: -50px;
     width: 100px;
     height: 100px;
-	box-shadow: 0 0 0 100vmax rgba(0,0,0,.5);
+	box-shadow: 0 0 0 100vmax rgba(0,0,0,.69);
 	display: none;
+	background-color: black;
 }
 
 /* Safari */
@@ -240,7 +241,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script type='text/javascript'>
 current_cart_qty = '{{total_qty}}'
 current_cart_price = '{{total_price}}'
-
+notification_timeout = -1
+notification_element = $('#cart-add-failure')
 $( document ).ready(function() {
 
 	$('#empty-cart').click(function(evt) {
@@ -255,7 +257,6 @@ $( document ).ready(function() {
 					current_cart_qty = 0
 					current_cart_price = 0
 					empty_checkout_box()
-					$(window).scrollTop(0);
 				}
 			}
 		};
@@ -275,6 +276,10 @@ $( document ).ready(function() {
 
 	$('.add-item').click(function(evt) {
 		evt.preventDefault()
+		if (notification_timeout !== -1) {
+			clearTimeout(notification_timeout)
+		}
+		notification_element.css('display', 'none')
 		$('.loader').css('display', 'block')
 		$('#blockDiv').css('display', 'block')
 		pk = evt.target.getAttribute('data-pk')
@@ -295,8 +300,9 @@ $( document ).ready(function() {
 					$("#blockDiv").css('display', 'none')
 					notification_element.css('display', 'block')
 				}, 1420);
-				setTimeout(function() {
+				notification_timeout = setTimeout(function() {
 					notification_element.css('display', 'none')
+					notification_timeout = -1
 				}, 4000);
 			}
 		};
