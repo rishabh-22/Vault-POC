@@ -130,6 +130,9 @@
 
 			xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=1");
 			xmlhttp.send();
+		} else
+		{
+			alert("You have already added the max quantity of this product to your cart")
 		}
 	});
 
@@ -180,7 +183,6 @@
 			$('#checkout-item-'+pk).css('display', 'none')
 		}
 		total_checkout_price.html(new_total)
-
 	}
 
 	var update_cart_header = function(price, qty) {

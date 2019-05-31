@@ -1,10 +1,21 @@
 {% extends "General/base.html" %}
 {% load static %}
 {% block content %}
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Update">
-</form>
+
+<div class="register">
+		<div class="container">
+			<h3 class="animated wow zoomIn" data-wow-delay=".5s" id='confirmation-title'>Update Profile</h3>
+			<p class="est animated wow zoomIn" data-wow-delay=".5s" id='confirmation-message' style='display: none;'>An email verification link has been sent to the address provided.</p>
+			<div class="login-form-grids" id='register-form-container'>
+
+                <form method="post">{% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Update">
+                </form>
+            </div>
+        </div>
+</div>
+
 
 {% include "General/footer.html" %}
 {% endblock %}
