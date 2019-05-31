@@ -69,6 +69,8 @@
 	</div>
 <!-- //checkout -->
 <script>
+	notification_timeout = -1
+	notification_element = $('#cart-add-failure')
 	$(document).ready(function() {
 		$('.close1').on('click', function(evt){
 			$(evt.target.getAttribute('data-row-id')).css('display', 'none')
@@ -107,7 +109,12 @@
 		max_qty = parseInt(evt.target.getAttribute('data-max-qty'))
 		if (newVal <= max_qty) {
 			divUpd.text(newVal);
-
+			if (notification_timeout !== -1) {
+				clearTimeout(notification_timeout)
+			}
+			notification_element.css('display', 'none')
+			$('.loader').css('display', 'block')
+			$('#blockDiv').css('display', 'block')
 			pk = evt.target.getAttribute('data-pk')
 			price = evt.target.getAttribute('data-price')
 
@@ -122,9 +129,17 @@
 					if (res['success'] === true) {
 						update_cart_header(parseInt(price), 1)
 						update_checkout_box(pk, parseInt(price), 1)
-						$(window).scrollTop(0);
-
+						notification_element = $('#cart-add-success')
 					}
+					setTimeout(function() {
+						$('.loader').css('display', 'none')
+						$("#blockDiv").css('display', 'none')
+						notification_element.css('display', 'block')
+					}, 1420);
+					notification_timeout = setTimeout(function() {
+						notification_element.css('display', 'none')
+						notification_timeout = -1
+					}, 4000);
 				}
 			};
 
@@ -140,7 +155,12 @@
 		var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)-1;
 		if (newVal >= 1) { 
 			divUpd.text(newVal);
-
+			if (notification_timeout !== -1) {
+				clearTimeout(notification_timeout)
+			}
+			notification_element.css('display', 'none')
+			$('.loader').css('display', 'block')
+			$('#blockDiv').css('display', 'block')
 			pk = evt.target.getAttribute('data-pk')
 			price = evt.target.getAttribute('data-price')
 
@@ -155,9 +175,17 @@
 					if (res['success'] === true) {
 						update_cart_header(parseInt(price), -1)
 						update_checkout_box(pk, parseInt(price), -1)
-						$(window).scrollTop(0);
-
+						notification_element = $('#cart-minus-success')
 					}
+					setTimeout(function() {
+						$('.loader').css('display', 'none')
+						$("#blockDiv").css('display', 'none')
+						notification_element.css('display', 'block')
+					}, 1420);
+					notification_timeout = setTimeout(function() {
+						notification_element.css('display', 'none')
+						notification_timeout = -1
+					}, 4000);
 				}
 			};
 
