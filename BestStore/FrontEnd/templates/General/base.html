@@ -53,13 +53,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </head>
 <style>
 .loader {
-  border: 16px solid #FFC229;
-  border-radius: 50%;
-  border-top: 16px solid white;
-  width: 42px;
-  height: 42px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+	border: 16px solid #FFC229;
+	border-radius: 50%;
+	border-top: 16px solid white;
+	width: 42px;
+	height: 42px;
+	-webkit-animation: spin 2s linear infinite; /* Safari */
+	animation: spin 2s linear infinite;
+	position: fixed;
+	z-index: 100;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 100px;
+    height: 100px;
+	box-shadow: 0 0 0 100vmax rgba(0,0,0,.5);
+	display: none;
 }
 
 /* Safari */
@@ -72,10 +82,39 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+#blockDiv {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
+	display: none;
+}
+
+#cart-add-failure {
+	position: fixed;
+	display: none;
+	width: 100%;
+	z-index: 999;
+	text-align: center;
+}
+
+#cart-add-success {
+	position: fixed;
+	display: none;
+	width: 100%;
+	z-index: 999;
+	text-align: center;
+}
 </style>
 
 <body>
 <!-- header -->
+<div class='alert alert-danger' id='cart-add-failure'>Item(s) failed to be added to cart: Max quantity of this product already added.</div>
+<div class='alert alert-success' id='cart-add-success'>Item(s) successfully added to cart.</div>
+<div id="blockDiv"></div>
 	<div class="header">
 		<div class="container">
 			<div class="header-grid">
@@ -195,6 +234,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<div class="clearfix"> </div>
 			</div>
 		</div>
+
 	</div>
 <!-- //header -->
 <script type='text/javascript'>
@@ -235,6 +275,8 @@ $( document ).ready(function() {
 
 	$('.add-item').click(function(evt) {
 		evt.preventDefault()
+		$('.loader').css('display', 'block')
+		$('#blockDiv').css('display', 'block')
 		pk = evt.target.getAttribute('data-pk')
 		price = evt.target.getAttribute('data-price')
 		qty = evt.target.getAttribute('data-qty') || 1
@@ -243,13 +285,19 @@ $( document ).ready(function() {
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				res = JSON.parse(this.responseText)
-				if (res['success'] === true) {
-					alert("Added Successfully ")
+				notification_element = $('#cart-add-failure')
+				if (res['success']) {
 					update_cart_header(parseInt(price), parseInt(qty))
-					$(window).scrollTop(0)
-				} else {
-					alert(res['msg'])
+					notification_element = $('#cart-add-success')
 				}
+				setTimeout(function() {
+					$('.loader').css('display', 'none')
+					$("#blockDiv").css('display', 'none')
+					notification_element.css('display', 'block')
+				}, 1420);
+				setTimeout(function() {
+					notification_element.css('display', 'none')
+				}, 4000);
 			}
 		};
 
