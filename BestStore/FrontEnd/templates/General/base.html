@@ -70,7 +70,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     height: 100px;
 	box-shadow: 0 0 0 100vmax rgba(0,0,0,.69);
 	display: none;
-	background-color: black;
+	background-color: #4F4F4F;
+	opacity: .69;
 }
 
 /* Safari */
@@ -109,13 +110,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	z-index: 999;
 	text-align: center;
 }
+
+#cart-minus-success {
+	position: fixed;
+	display: none;
+	width: 100%;
+	z-index: 999;
+	text-align: center;
+}
 </style>
 
-<body>
 <!-- header -->
 <div class='alert alert-danger' id='cart-add-failure'>Item(s) failed to be added to cart: Max quantity of this product already added.</div>
 <div class='alert alert-success' id='cart-add-success'>Item(s) successfully added to cart.</div>
+<div class='alert alert-success' style='background-color: lightgrey !important; color: black !important;' id='cart-minus-success'>Item successfully removed from cart.</div>
 <div id="blockDiv"></div>
+<div class="loader"></div>
 	<div class="header">
 		<div class="container">
 			<div class="header-grid">
