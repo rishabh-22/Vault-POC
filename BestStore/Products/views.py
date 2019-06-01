@@ -67,10 +67,13 @@ def product_listings(request):
         all_sub_category = SubCategory.objects.all()
         # Grab all products to paginate
         all_products = Product.objects.all()
+
+        # Search functionality
+        if 'search' in request.GET:
+            all_products = check_search(request, all_products, all_category, all_sub_category)
         # If no products are in database then we have nothing to show the user
-        if len(all_products) == 0:
-            return Http404()
         # Set appropriate values for pagination parameters
+        products = list()
         prods_per_page = PRODUCTS_PER_PAGE
         total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
         if page < 1:
@@ -79,10 +82,9 @@ def product_listings(request):
             page = total_pages
         start_index = (page - 1) * prods_per_page
         end_index = start_index + prods_per_page
-        products = all_products[start_index: end_index]
-        # Search functionality
-        if 'search' in request.GET:
-            products = check_search(request, all_products, all_category, all_sub_category)
+        if len(all_products) != 0:
+            products = all_products[start_index: end_index]
+
         # Set context variable for template to use to display the products and paginated navigation
         info = {
             'category': all_category,
@@ -93,7 +95,6 @@ def product_listings(request):
             'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
             'search_term': search_term,
         }
-
         # Render template with context containing pagination details
         return render(request, 'Products/products.html', context=info)
 
@@ -167,6 +168,7 @@ class ProductDetailView(DetailView):
         context['qty'] = range(1, context['object'].quantity + 1)
         # Product model object to be used on detail page
         product = kwargs['object']
+        import pdb;pdb.set_trace()
         context['image'] = product.productimages_set.all()
         return context
 

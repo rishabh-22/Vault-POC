@@ -90,7 +90,11 @@
 						</a>
 					</li>
 					{% for page_num in pages %}
-					<li><a href="/products/?page={{page_num}}">{{page_num}}</a></li>
+						{% if current_page == page_num %}
+						<li><a href="/products/?page={{page_num}}" style="background-color: lightblue !important;">{{page_num}}</a></li>
+						{% else %}
+						<li><a href="/products/?page={{page_num}}">{{page_num}}</a></li>
+						{% endif %}
 					{% endfor %}
 					<li>
 						<a href="{{next}}" aria-label="Next">
@@ -123,10 +127,12 @@
 					method : 'GET',
 					success: function(response) {
 						$("#products_display").html(response);
+
 					}
 				});
 			});
         });
 </script>
+
 {% include "General/footer.html" %}
 {% endblock %}
