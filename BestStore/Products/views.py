@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.views.generic import ListView
-from .models import Product, Category, SubCategory, Newsletter
+from .models import Product, Category, SubCategory, Newsletter, Tags
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
@@ -168,8 +168,12 @@ class ProductDetailView(DetailView):
         context['qty'] = range(1, context['object'].quantity + 1)
         # Product model object to be used on detail page
         product = kwargs['object']
-        import pdb;pdb.set_trace()
+        specifications = Tags.objects.get(product=product.id)
         context['image'] = product.productimages_set.all()
+        context['specification'] = {'Size': specifications.size,
+                                    'Color': specifications.color,
+                                    'Weight': specifications.weight}
+
         return context
 
 

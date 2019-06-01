@@ -8,7 +8,7 @@
 		<div class="container">
 			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
 				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
-				<li class="active">Single Page</li>
+				<li class="active">{{ object.name }}</li>
 			</ol>
 		</div>
 	</div>
@@ -21,23 +21,12 @@
 						<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 				</div>
 				<div class="men-position animated wow slideInUp" data-wow-delay=".5s">
-					<a href="single.html"><img src="{% static 'images/29.jpg' %}" alt=" " class="img-responsive" /></a>
-					<div class="men-position-pos">
-						<h4>Summer collection</h4>
-						<h5><span>55%</span> Flat Discount</h5>
-					</div>
+					<div class="thumb-image"> <img src="{{ object.productimages_set.first.image.url }}" data-imagezoom="true" class="img-responsive"> </div>
 				</div>
 			</div>
 			<div class="col-md-8 single-right">
 				<div class="col-md-5 single-right-left animated wow slideInUp" data-wow-delay=".5s">
-					<div class="flexslider">
-						<ul class="slides">
-							<li data-thumb="{% static 'images/si.jpg' %}">
-									<div class="thumb-image"> <img src="{{ object.productimages_set.first.image.url }}" data-imagezoom="true" class="img-responsive"> </div>
-							</li>
-						</ul>
-					</div>
-					<!-- flixslider -->
+
 						<script defer src="{% static 'js/jquery.flexslider.js' %}"></script>
 						<link rel="stylesheet" href="{% static 'css/flexslider.css' %}" type="text/css" media="screen" />
 						<script>
@@ -49,10 +38,11 @@
 						  });
 						});
 						</script>
-					<!-- flixslider -->
+
 				</div>
 				<div class="col-md-7 single-right-left simpleCart_shelfItem animated wow slideInRight" data-wow-delay=".5s">
 					<h3>{{ object.name }} </h3>
+
 					<h4><span class="item_price">$ {{ object.price }}</span></h4>
 					<div class="description">
 						<h5><i>Description</i></h5>
@@ -78,10 +68,21 @@
 					<div class="occasion-cart">
 						<a class="add-item" data-pk="{{object.id}}" data-product-detail='true' data-price="{{object.price}}" data-qty="1" href="#">add to cart </a>
 					</div>
+
 						<div class="clearfix"> </div>
 					</div>
+
 				</div>
+
 				<div class="clearfix"> </div>
+
+			<div>
+				{% for img in object.productimages_set.all %}
+			<div class="thumb-image" > <img src="{{ img.image.url }}" data-imagezoom="true" class="img-responsive" height="100" width="100" > </div>
+{% endfor %}
+			</div>
+
+
 				<div class="bootstrap-tab animated wow slideInUp" data-wow-delay=".5s">
 					<div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
 						<ul id="myTab" class="nav nav-tabs" role="tablist">
@@ -93,48 +94,22 @@
 								<h5>Product Brief Description</h5>
 								<p> {{ object.description }}
 									<span>{{ object.description }}</span></p>
-							</div>
-							<div role="tabpanel" class="tab-pane fade bootstrap-tab-text" id="profile" aria-labelledby="profile-tab">
-								<div class="bootstrap-tab-text-grids">
-									<div class="bootstrap-tab-text-grid">
-										<div class="bootstrap-tab-text-grid-left">
-											<img src="images/4.png" alt=" " class="img-responsive" />
-										</div>
-										<div class="bootstrap-tab-text-grid-right">
-											<ul>
-												<li><a href="#">Admin</a></li>
-												<li><a href="#"><span class="glyphicon glyphicon-share" aria-hidden="true"></span>Reply</a></li>
-											</ul>
-											<p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis
-												suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem
-												vel eum iure reprehenderit.</p>
-										</div>
-										<div class="clearfix"> </div>
-									</div>
-									<div class="bootstrap-tab-text-grid">
-										<div class="bootstrap-tab-text-grid-left">
-											<img src="images/5.png" alt=" " class="img-responsive" />
-										</div>
-										<div class="bootstrap-tab-text-grid-right">
-											<ul>
-												<li><a href="#">Admin</a></li>
-												<li><a href="#"><span class="glyphicon glyphicon-share" aria-hidden="true"></span>Reply</a></li>
-											</ul>
-											<p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis
-												suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem
-												vel eum iure reprehenderit.</p>
-										</div>
-										<div class="clearfix"> </div>
-									</div>
+								<div class="tab-content">
+								{% for key,value in specification.items %}
+								<strong> {{ key }}  : {{ value }} </strong> <br>
+								{% endfor %}
+
 								</div>
+
 							</div>
+
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="clearfix"> </div>
+
 		</div>
-	</div>
+
 <!-- //single -->
 <script type='text/javascript'>
 	function update_qty(val) {
