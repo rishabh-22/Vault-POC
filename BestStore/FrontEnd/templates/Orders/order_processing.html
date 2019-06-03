@@ -1,0 +1,202 @@
+{% extends "General/base.html" %}
+{% load static %}
+{% block content %}
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Checkout Page</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- checkout -->
+	<div class="checkout">
+		<div class="container">
+			<div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
+
+				<table class="timetable_sub">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Shipping Address</th>
+							<th>Product Price</th>
+                            <th>Ordering Date</th>
+						</tr>
+					</thead>
+                     {% for order in your_orders %}
+					<tr class="rem1" id='product-{{data.product.id}}'>
+						<td class="invert">{{order.product}}</td>
+						<td class="invert">{{order.shipping_address}}</td>
+						<td class="invert">${{order.product.price}}.00</td>
+                        <td class="invert">{{ order.date }}</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+
+				<div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
+					<a href="{% url 'products' %}"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Continue Shopping</a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+
+<!-- //checkout -->
+<script>
+	notification_timeout = -1
+	notification_element = $('#cart-add-failure')
+	$(document).ready(function() {
+		$('.close1').on('click', function(evt){
+			$(evt.target.getAttribute('data-row-id')).css('display', 'none')
+			pk = evt.target.getAttribute('data-product-pk')
+			price = evt.target.getAttribute('data-product-price')
+			qty = evt.target.getAttribute('data-product-qty')
+
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+						remove_cart_items_header(parseInt(price), parseInt(qty))
+						update_checkout_box(pk, parseInt(price), -parseInt(qty))
+						$(window).scrollTop(0);
+					}
+				}
+			};
+
+			xmlhttp.open("GET", "/api/product/cart/remove/"+pk+"/");
+			xmlhttp.send();
+		});
+
+		var remove_cart_items_header = function(price, qty) {
+			current_cart_qty = parseInt(current_cart_qty) - qty
+			current_cart_price = parseInt(current_cart_price) - (qty*price)
+
+			$('#cart-qty').html(current_cart_qty)
+			$('#cart-price').html(current_cart_price)
+		}
+	});	  
+
+	$('.value-plus').on('click', function(evt){
+
+		var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)+1;
+		max_qty = parseInt(evt.target.getAttribute('data-max-qty'))
+		if (newVal <= max_qty) {
+			divUpd.text(newVal);
+			if (notification_timeout !== -1) {
+				clearTimeout(notification_timeout)
+			}
+			notification_element.css('display', 'none')
+			$('.loader').css('display', 'block')
+			$('#blockDiv').css('display', 'block')
+			pk = evt.target.getAttribute('data-pk')
+			price = evt.target.getAttribute('data-price')
+
+			remove_element = $('#remove-'+pk)[0]
+			new_qty = parseInt(remove_element.getAttribute('data-product-qty')) + 1
+			remove_element.setAttribute('data-product-qty', new_qty)
+
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+						update_cart_header(parseInt(price), 1)
+						update_checkout_box(pk, parseInt(price), 1)
+						notification_element = $('#cart-add-success')
+					}
+					setTimeout(function() {
+						$('.loader').css('display', 'none')
+						$("#blockDiv").css('display', 'none')
+						notification_element.css('display', 'block')
+					}, 1420);
+					notification_timeout = setTimeout(function() {
+						notification_element.css('display', 'none')
+						notification_timeout = -1
+					}, 4000);
+				}
+			};
+
+			xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=1");
+			xmlhttp.send();
+		} else
+		{
+			alert("You have already added the max quantity of this product to your cart")
+		}
+	});
+
+	$('.value-minus').on('click', function(evt){
+		var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)-1;
+		if (newVal >= 1) { 
+			divUpd.text(newVal);
+			if (notification_timeout !== -1) {
+				clearTimeout(notification_timeout)
+			}
+			notification_element.css('display', 'none')
+			$('.loader').css('display', 'block')
+			$('#blockDiv').css('display', 'block')
+			pk = evt.target.getAttribute('data-pk')
+			price = evt.target.getAttribute('data-price')
+
+			remove_element = $('#remove-'+pk)[0]
+			new_qty = parseInt(remove_element.getAttribute('data-product-qty')) - 1
+			remove_element.setAttribute('data-product-qty', new_qty)
+
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+						update_cart_header(parseInt(price), -1)
+						update_checkout_box(pk, parseInt(price), -1)
+						notification_element = $('#cart-minus-success')
+					}
+					setTimeout(function() {
+						$('.loader').css('display', 'none')
+						$("#blockDiv").css('display', 'none')
+						notification_element.css('display', 'block')
+					}, 1420);
+					notification_timeout = setTimeout(function() {
+						notification_element.css('display', 'none')
+						notification_timeout = -1
+					}, 4000);
+				}
+			};
+
+			xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty=-1");
+			xmlhttp.send();
+		}
+	});
+
+	var update_checkout_box = function(pk, price, qty) {
+		item_checkout_price = $('#'+pk+'-checkout-price')
+		item_checkout_qty = $('#'+pk+'-checkout-qty')  
+		total_checkout_price = $('#checkout-box-total-price')
+
+		price_change = qty*price
+		new_price = parseInt(item_checkout_price.html()) + price_change
+		new_qty = parseInt(item_checkout_qty.html()) + qty
+		new_total = parseInt(total_checkout_price.html()) + price_change
+
+		if (new_qty > 0) {
+			item_checkout_price.html(new_price)
+			item_checkout_qty.html(new_qty)
+		} else {
+			$('#checkout-item-'+pk).css('display', 'none')
+		}
+		total_checkout_price.html(new_total)
+	}
+
+	var update_cart_header = function(price, qty) {
+		current_cart_qty = parseInt($('#cart-qty').html()) + qty
+		current_cart_price = parseInt($('#cart-price').html()) + (qty*price)
+		
+		$('#cart-qty').html(current_cart_qty)
+		$('#cart-price').html(current_cart_price)
+	}
+</script>
+	<!--quantity-->
+{% include "General/footer.html" %}
+{% endblock %}

@@ -12,6 +12,11 @@ def checkout(request):
     return render(request, 'Orders/checkout.html', context=context)
 
 
+def order_display(request):
+    context = {'your_orders': Order.objects.filter(buyer=request.user.id)}
+    return render(request, 'Orders/order_processing.html', context)
+
+
 def cart_detail_to_product(prod_dict):
     copy = prod_dict.copy()
     pk = copy.pop('pk')
@@ -43,13 +48,4 @@ def orders(request):
 
     if request.method == 'GET':
             context = {'products': get_cart_items(request)}
-
             return render(request, 'Orders/orders.html', context=context)
-
-
-
-
-
-    #         import pdb;pdb.set_trace()
-#return render(request, 'Orders/orders.html')
-
