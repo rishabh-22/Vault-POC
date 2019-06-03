@@ -7,14 +7,14 @@ from .views import (
 
 urlpatterns = [
     path('', home, name="homepage"),
+    path('products/filter/', filter_listings, name='filter'),
     path('products/', product_listings, name="products"),
-    path('products/<int:pk>/', ProductDetailView.as_view(), name="detail"),
+    path('products/<slug>/', ProductDetailView.as_view(), name="detail"),
     path('api/product/cart/update/<int:pk>/', cart_update, name='cart-update'),
     path('api/product/cart/empty/', cart_empty, name='cart-empty-all'),
     path('api/product/cart/empty/<int:pk>/', cart_empty, name='cart-empty'),
     path('api/product/cart/remove/<int:pk>/', cart_item_remove, name='cart-item-remove'),
     path('featured/', FeaturedProduct.as_view(), name='featured'),
     path('ajax/search/', auto_complete, name='auto'),
-    path('products/filter/', filter_listings, name='filter'),
 
 ]

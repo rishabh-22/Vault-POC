@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .util import unique_slug_generator
 
 CATEGORY_CHOICES = (
     ('Electronic', 'Electronic'),
@@ -60,9 +61,15 @@ class Product(models.Model):
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     is_featured = models.BooleanField(default=False)
     modified_date = models.DateTimeField(auto_now=True)
+    slug = models.SlugField(max_length=250, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = unique_slug_generator(self)
+        super(Product, self).save(*args, **kwargs)
 
 
 class Tags(models.Model):
