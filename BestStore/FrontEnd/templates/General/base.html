@@ -71,7 +71,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	box-shadow: 0 0 0 100vmax rgba(0,0,0,.69);
 	display: none;
 	background-color: #4F4F4F;
-	opacity: .69;
+	opacity: 0.69;
 }
 
 /* Safari */
@@ -118,12 +118,21 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	z-index: 999;
 	text-align: center;
 }
+
+#cart-empty-success {
+	position: fixed;
+	display: none;
+	width: 100%;
+	z-index: 999;
+	text-align: center;
+}
 </style>
 
 <!-- header -->
-<div class='alert alert-danger' id='cart-add-failure'>Item(s) failed to be added to cart: Max quantity of this product already added.</div>
-<div class='alert alert-success' id='cart-add-success'>Item(s) successfully added to cart.</div>
-<div class='alert alert-success' style='background-color: lightgrey !important; color: black !important;' id='cart-minus-success'>Item successfully removed from cart.</div>
+<div class='cart-notification alert alert-danger' id='cart-add-failure'>Item(s) failed to be added to cart: Max quantity of this product already added.</div>
+<div class='cart-notification alert alert-success' id='cart-add-success'>Item(s) successfully added to cart.</div>
+<div class='cart-notification alert alert-success' id='cart-minus-success'>Item successfully removed from cart.</div>
+<div class='cart-notification alert alert-success' id='cart-empty-success'>All items successfully emptied from cart.</div>
 <div id="blockDiv"></div>
 <div class="loader"></div>
 	<div class="header">
@@ -179,17 +188,26 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 											<ul class="multi-column-dropdown">
 												<h6> Category </h6>
 												{% for db_name, item in category_choices %}
-													<li> {{ item }} </li> <br>
+												<li>
+													<a class="filter_value" href="/products/?search={{ item }}" name="filter_value" value="{{item}}">
+														{{ item }}
+													</a>
+												</li>
+												<br>
 												{% endfor %}
-
 											</ul>
 										</div>
 										<div class="col-sm-4">
 											<ul class="multi-column-dropdown">
 
-												<h6>Sub Category</h6>
+												<h6>Tags</h6>
 												{% for db_name, item in sub_category_choices %}
-												<li> {{ item }} </li> <br>
+
+													<li>
+														<a class="filter_value" href="/products/?search={{ item }}" name="filter_value" value="{{ item }}">
+															{{ item }}
+														</a>
+													</li>
 												{% endfor %}
 											</ul>
 										</div>
@@ -248,22 +266,39 @@ $( document ).ready(function() {
 
 	$('#empty-cart').click(function(evt) {
 		evt.preventDefault()
-
-		var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-		xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				res = JSON.parse(this.responseText)
-				if (res['success'] === true) {
-					empty_cart_header(0, 0)
-					current_cart_qty = 0
-					current_cart_price = 0
-					empty_checkout_box()
-				}
+		if (parseInt(current_cart_qty) > 0) {
+			if (notification_timeout !== -1) {
+				clearTimeout(notification_timeout)
 			}
-		};
+			notification_element.css('display', 'none')
+			$('.loader').css('display', 'block')
+			$('#blockDiv').css('display', 'block')
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+						empty_cart_header(0, 0)
+						current_cart_qty = 0
+						current_cart_price = 0
+						empty_checkout_box()
+						notification_element = $('#cart-empty-success')
+					}
+					setTimeout(function() {
+						$('.loader').css('display', 'none')
+						$("#blockDiv").css('display', 'none')
+						notification_element.css('display', 'block')
+					}, 1420);
+					notification_timeout = setTimeout(function() {
+						notification_element.css('display', 'none')
+						notification_timeout = -1
+					}, 4000);
+				}
+			};
 
-		xmlhttp.open("GET", "/api/product/cart/empty/");
-		xmlhttp.send();	
+			xmlhttp.open("GET", "/api/product/cart/empty/");
+			xmlhttp.send();
+		}
 	})
 
 	$("#prod").mouseover(function(){

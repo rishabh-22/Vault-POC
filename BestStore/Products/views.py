@@ -1,7 +1,9 @@
 import json
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.views.generic import ListView
-from .models import Product, Category, SubCategory, Newsletter
+from .models import Product, Category, SubCategory, Newsletter, Tags
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
@@ -19,18 +21,29 @@ def home(request):
     """
     featured = Product.objects.filter(is_featured=1).order_by('-modified_date')[:3]
     all_category = Category.objects.all()
-
     context = {'featured_products': featured, 'category': all_category}
+
     # Save newsletter information
     if request.method == 'POST':
+        import pdb;
+        pdb.set_trace()
         mail = request.POST.get('news_letter_email')
         user = Newsletter.objects.create(email=mail)
+
         try:
             User.objects.get(email=mail)
             context['mail_exists'] = True
         except Exception:
             context['Success'] = True
         user.save()
+        plain_message = "Successfully Subscribed to our news letter!"
+        html_message = render_to_string('General/email.html')
+        send_mail(EMAIL_SUBJECT,
+                  plain_message,
+                  DUMMY_EMAIL,
+                  [mail],
+                  html_message=html_message,
+                  fail_silently=False)
         return render(request, "Products/homepage.html", context)
     return render(request, "Products/homepage.html", context)
 
@@ -54,10 +67,13 @@ def product_listings(request):
         all_sub_category = SubCategory.objects.all()
         # Grab all products to paginate
         all_products = Product.objects.all()
+
+        # Search functionality
+        if 'search' in request.GET:
+            all_products = check_search(request, all_products, all_category, all_sub_category)
         # If no products are in database then we have nothing to show the user
-        if len(all_products) == 0:
-            return Http404()
         # Set appropriate values for pagination parameters
+        products = list()
         prods_per_page = PRODUCTS_PER_PAGE
         total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
         if page < 1:
@@ -66,10 +82,9 @@ def product_listings(request):
             page = total_pages
         start_index = (page - 1) * prods_per_page
         end_index = start_index + prods_per_page
-        products = all_products[start_index: end_index]
-        # Search functionality
-        if 'search' in request.GET:
-            products = check_search(request, all_products, all_category, all_sub_category)
+        if len(all_products) != 0:
+            products = all_products[start_index: end_index]
+
         # Set context variable for template to use to display the products and paginated navigation
         info = {
             'category': all_category,
@@ -80,7 +95,6 @@ def product_listings(request):
             'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
             'search_term': search_term,
         }
-
         # Render template with context containing pagination details
         return render(request, 'Products/products.html', context=info)
 
@@ -154,7 +168,12 @@ class ProductDetailView(DetailView):
         context['qty'] = range(1, context['object'].quantity + 1)
         # Product model object to be used on detail page
         product = kwargs['object']
+        specifications = Tags.objects.get(product=product.id)
         context['image'] = product.productimages_set.all()
+        context['specification'] = {'Size': specifications.size,
+                                    'Color': specifications.color,
+                                    'Weight': specifications.weight}
+
         return context
 
 
