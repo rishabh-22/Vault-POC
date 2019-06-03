@@ -23,7 +23,7 @@ class Order(models.Model):
     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    payment_type = models.CharField(max_length=20, choices=PAYMENT_CHOICES)
+    payment_type = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='COD')
     quantity = models.IntegerField()
     shipping_address = models.CharField(max_length=100)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default='IP')

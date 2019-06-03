@@ -112,10 +112,12 @@
 						}
 					}
 				};
+				xmlhttp.open("POST", "/orders/");
+
 				xmlhttp.setRequestHeader("Content-Type", "application/json");
 				xmlhttp.setRequestHeader("X-CSRFToken", $("[name=csrfmiddlewaretoken]").val());
 	
-				xmlhttp.open("POST", "/orders/");
+
 				xmlhttp.send(JSON.stringify({"address": address}));
 			} 
 		})
