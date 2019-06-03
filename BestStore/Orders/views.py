@@ -3,9 +3,8 @@ from Products.models import Product
 
 
 def checkout(request):
-    cart = request.session.get('cart', dict())
-    prods = {k: cart_detail_to_product(v) for k, v in cart.items()}
-    return render(request, 'Orders/checkout.html', context={'products': prods})
+    context = {'products': get_cart_items(request)}
+    return render(request, 'Orders/checkout.html', context=context)
 
 
 def cart_detail_to_product(prod_dict):
@@ -17,7 +16,13 @@ def cart_detail_to_product(prod_dict):
 
 
 def orders(request):
-    return render(request, 'Orders/orders.html')
+    context = {'products': get_cart_items(request)}
+    return render(request, 'Orders/orders.html', context=context)
+
+
+def get_cart_items(request):
+    cart = request.session.get('cart', dict())
+    return {k: cart_detail_to_product(v) for k, v in cart.items()}
 
 #
 # def process_order(request):
