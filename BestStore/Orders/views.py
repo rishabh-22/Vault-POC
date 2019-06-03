@@ -5,9 +5,8 @@ from Products.models import Product
 
 
 def checkout(request):
-    cart = request.session.get('cart', dict())
-    prods = {k: cart_detail_to_product(v) for k, v in cart.items()}
-    return render(request, 'Orders/checkout.html', context={'products': prods})
+    context = {'products': get_cart_items(request)}
+    return render(request, 'Orders/checkout.html', context=context)
 
 
 def cart_detail_to_product(prod_dict):
@@ -17,8 +16,16 @@ def cart_detail_to_product(prod_dict):
     copy['total_product_price'] = copy['product'].price * copy['qty']
     return copy
 
+  
+def get_cart_items(request):
+    cart = request.session.get('cart', dict())
+    return {k: cart_detail_to_product(v) for k, v in cart.items()}
 
+  
 def orders(request):
+    context = {'products': get_cart_items(request)}
+    return render(request, 'Orders/orders.html', context=context)
+
     # if request.method == 'POST':
     #     customer = request.user.username
     #     address = request.POST.get('shipping_address')
@@ -33,4 +40,4 @@ def orders(request):
     #
     #         import pdb;pdb.set_trace()
         return render(request, 'Orders/orders.html')
-    #
+

@@ -1,131 +1,126 @@
 {% extends "General/base.html" %}
 {% load static %}
 {% block content %}
-
+<style>
+#order-final-table {
+	margin: auto;
+	font-size: 24px;
+}
+.order-button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 24px;
+}
+</style>
 <h3 class="title animated wow zoomIn" data-wow-delay=".5s">{{ firstname }} 's Orders</h3>
 
 <div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
-				<table class="timetable_sub">
-					<thead>
-						<tr>
-							<th>SL No.</th>
-							<th>Product</th>
-							<th>Quality</th>
-							<th>Product Name</th>
-							<th>Service Charges</th>
-							<th>Price</th>
-							<th>Remove</th>
-						</tr>
-					</thead>
-					<tr class="rem1">
-						<td class="invert">1</td>
-						<td class="invert-image"><a href="single.html"><img src="images/22.jpg" alt=" " class="img-responsive" /></a></td>
-						<td class="invert">
-							 <div class="quantity">
-								<div class="quantity-select">
-									<div class="entry value-minus">&nbsp;</div>
-									<div class="entry value"><span>1</span></div>
-									<div class="entry value-plus active">&nbsp;</div>
-								</div>
-							</div>
-						</td>
-						<td class="invert">Black Shoe</td>
-						<td class="invert">$5.00</td>
-						<td class="invert">$290.00</td>
-						<td class="invert">
-							<div class="rem">
-								<div class="close1"> </div>
-							</div>
-							<script>$(document).ready(function(c) {
-								$('.close1').on('click', function(c){
-									$('.rem1').fadeOut('slow', function(c){
-										$('.rem1').remove();
-									});
-									});
-								});
-						   </script>
-						</td>
-					</tr>
-					<tr class="rem2">
-						<td class="invert">2</td>
-						<td class="invert-image"><a href="single.html"><img src="images/30.jpg" alt=" " class="img-responsive" /></a></td>
-						<td class="invert">
-							 <div class="quantity">
-								<div class="quantity-select">
-									<div class="entry value-minus">&nbsp;</div>
-									<div class="entry value"><span>1</span></div>
-									<div class="entry value-plus active">&nbsp;</div>
-								</div>
-							</div>
-						</td>
-						<td class="invert">Centre Table</td>
-						<td class="invert">$5.00</td>
-						<td class="invert">$250.00</td>
-						<td class="invert">
-							<div class="rem">
-								<div class="close2"> </div>
-							</div>
-							<script>$(document).ready(function(c) {
-								$('.close2').on('click', function(c){
-									$('.rem2').fadeOut('slow', function(c){
-										$('.rem2').remove();
-									});
-									});
-								});
-						   </script>
-						</td>
-					</tr>
-					<tr class="rem3">
-						<td class="invert">3</td>
-						<td class="invert-image"><a href="single.html"><img src="images/11.jpg" alt=" " class="img-responsive" /></a></td>
-						<td class="invert">
-							 <div class="quantity">
-								<div class="quantity-select">
-									<div class="entry value-minus">&nbsp;</div>
-									<div class="entry value"><span>1</span></div>
-									<div class="entry value-plus active">&nbsp;</div>
-								</div>
-							</div>
-						</td>
-						<td class="invert">Stone Bangles</td>
-						<td class="invert">$5.00</td>
-						<td class="invert">$299.00</td>
-						<td class="invert">
-							<div class="rem">
-								<div class="close3"> </div>
-							</div>
-							<script>$(document).ready(function(c) {
-								$('.close3').on('click', function(c){
-									$('.rem3').fadeOut('slow', function(c){
-										$('.rem3').remove();
-									});
-									});
-								});
-						   </script>
-						</td>
-					</tr>
-								<!--quantity-->
-									<script>
-									$('.value-plus').on('click', function(){
-										var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)+1;
-										divUpd.text(newVal);
-									});
+	<table class="timetable_sub" style='margin-top: 24px;'>
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Quantity</th>
+				<th>Product Name</th>
+				<th>Product Price</th>
+				<th>Order Price</th>
+			</tr>
+		</thead>
+		{% for key, data in products.items %}
+		<tr class="rem1" id='product-{{data.product.id}}'>
+			<td class="invert-image"><a href="single.html"><img src="{{data.product.productimages_set.first.image.url}}" alt=" " style='height: 42px !important; width: 42px !important;' class="img-responsive" /></a></td>
+			<td class="invert">
+					<div class="quantity"> 
+					<div class="quantity-select">
+						<div class="entry value" id='{{data.product.id}}-product-qty'><span>{{data.qty}}</span></div>
+					</div>
+				</div>
+			</td>
+			<td class="invert">{{data.product.name}}</td>
+			<td class="invert">${{data.product.price}}.00</td>
+			<td class="invert product-order" data-price='{{data.product.price}}' data-qty='{{data.qty}}'></td>
+		</tr>
+		{% endfor %}
+	</table>
 
-									$('.value-minus').on('click', function(){
-										var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)-1;
-										if(newVal>=1) divUpd.text(newVal);
-									});
-									</script>
-								<!--quantity-->
-				</table>
-			</div>
+	<br><br>
+	<table id='order-final-table'>
+		<tr>
+			<th style='text-align: right;'>ORDER TOTAL</th>
+			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+			<td>$<span id='total-order-price'></span>.00</td>
+		</tr>
+		<tr>
+			<th style='text-align: right;'>ORDER DATE</th>
+			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+			<td><span id='order-date'></span></td>
+		</tr>
+		<tr>
+			<th style='text-align: right;'>PAYMENT TYPE</th>
+			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+			<td>CASH ON DELIVERY</td>
+		</tr>
+		<tr>
+			<th style='text-align: right;'>SHIPPING ADDRESS</th>
+			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+			<td><input id='address' type='textarea'></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td><button class='order-button'>MAKE ORDER</button></td>
+		</tr>
+	</table>
+	{% csrf_token %}
+</div>
 
 
 <br>
 <br>
 <br>
 
+<script type='text/javascript'>
+	$(document).ready(function() {
+		var today = new Date();
+		$('#order-date').html(today.toLocaleDateString())
 
+		order_prices = $('.product-order')
+		total_order_price = 0
+		for (let i=0; i<order_prices.length; i++) {
+			price = parseInt(order_prices[i].getAttribute('data-price'))
+			qty = parseInt(order_prices[i].getAttribute('data-qty'))
+			total_product_order = (price*qty)
+			total_order_price += total_product_order
+			html_str = "$"+total_product_order.toString()+".00"
+			$(order_prices[i]).html(html_str)
+		}
+		$('#total-order-price').html(total_order_price)
+		$('.order-button').on('click', function() {
+			address = $('#address').val().trim().replace(/[\W_]+/g,"")
+			if (address.length > 0) {
+				var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+				xmlhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						res = JSON.parse(this.responseText)
+						if (res['success'] === true) {
+							alert('Order has been placed. Check your email for confirmation.')
+						}
+					}
+				};
+				xmlhttp.setRequestHeader("Content-Type", "application/json");
+				xmlhttp.setRequestHeader("X-CSRFToken", $("[name=csrfmiddlewaretoken]").val());
+	
+				xmlhttp.open("POST", "/orders/");
+				xmlhttp.send(JSON.stringify({"address": address}));
+			} 
+		})
+	})
+</script>
 
 
 {% include "General/footer.html" %}
