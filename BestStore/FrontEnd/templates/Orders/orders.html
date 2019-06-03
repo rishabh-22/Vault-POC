@@ -53,7 +53,7 @@
 		<tr>
 			<th style='text-align: right;'>ORDER TOTAL</th>
 			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-			<td>$<span id='total-order-price'></span>.00</td>
+			<td id='order-total-order'>$<span id='total-order-price'></span>.00</td>
 		</tr>
 		<tr>
 			<th style='text-align: right;'>ORDER DATE</th>
@@ -68,7 +68,7 @@
 		<tr>
 			<th style='text-align: right;'>SHIPPING ADDRESS</th>
 			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-			<td><input id='address' type='textarea'></td>
+			<td id='address-container'><input id='address' type='textarea'></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -86,6 +86,8 @@
 
 <script type='text/javascript'>
 	$(document).ready(function() {
+		notification_timeout = -1
+		notification_element = $('#cart-add-failure')
 		var today = new Date();
 		$('#order-date').html(today.toLocaleDateString())
 
@@ -101,15 +103,34 @@
 		}
 		$('#total-order-price').html(total_order_price)
 		$('.order-button').on('click', function() {
-			address = $('#address').val().trim().replace(/[\W_]+/g,"")
-			if (address.length > 0) {
+			address = $('#address').val()
+			address_stripped = address.trim().replace(/[\W_]+/g,"")
+			if (address_stripped.length > 0) {
+				if (notification_timeout !== -1) {
+					clearTimeout(notification_timeout)
+				}
+				notification_element.css('display', 'none')
+				$('.loader').css('display', 'block')
+				$('#blockDiv').css('display', 'block')
 				var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
 				xmlhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
 						res = JSON.parse(this.responseText)
 						if (res['success'] === true) {
-							alert('Order has been placed. Check your email for confirmation.')
+							notification_element = $('#order-success')
 						}
+						setTimeout(function() {
+							$('.loader').css('display', 'none')
+							$("#blockDiv").css('display', 'none')
+							notification_element.css('display', 'block')
+							$('.order-button').css('display', 'none')
+							$('#address-container').html(address)
+					
+						}, 1420);
+						notification_timeout = setTimeout(function() {
+							notification_element.css('display', 'none')
+							notification_timeout = -1
+						}, 5000);
 					}
 				};
 				xmlhttp.open("POST", "/orders/");
@@ -119,7 +140,9 @@
 	
 
 				xmlhttp.send(JSON.stringify({"address": address}));
-			} 
+			} else {
+				alert('Please enter a valid address.')
+			}
 		})
 	})
 </script>

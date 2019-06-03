@@ -39,6 +39,8 @@ def orders(request):
                 shipping_address=address,
             )
             ord.save()
+        del request.session['cart']
+        request.session.modified = True
         return JsonResponse({'success': True})
 
     if request.method == 'GET':

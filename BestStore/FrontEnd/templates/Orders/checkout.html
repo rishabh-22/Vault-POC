@@ -73,7 +73,13 @@
 	notification_element = $('#cart-add-failure')
 	$(document).ready(function() {
 		$('.close1').on('click', function(evt){
-			$(evt.target.getAttribute('data-row-id')).css('display', 'none')
+			if (notification_timeout !== -1) {
+				clearTimeout(notification_timeout)
+			}
+			notification_element.css('display', 'none')
+			$('.loader').css('display', 'block')
+			$('#blockDiv').css('display', 'block')
+			
 			pk = evt.target.getAttribute('data-product-pk')
 			price = evt.target.getAttribute('data-product-price')
 			qty = evt.target.getAttribute('data-product-qty')
@@ -83,10 +89,20 @@
 				if (this.readyState == 4 && this.status == 200) {
 					res = JSON.parse(this.responseText)
 					if (res['success'] === true) {
+						notification_element = $('#cart-minus-success')
+					}
+					setTimeout(function() {
+						$('.loader').css('display', 'none')
+						$("#blockDiv").css('display', 'none')
 						remove_cart_items_header(parseInt(price), parseInt(qty))
 						update_checkout_box(pk, parseInt(price), -parseInt(qty))
-						$(window).scrollTop(0);
-					}
+						$(evt.target.getAttribute('data-row-id')).css('display', 'none')
+						notification_element.css('display', 'block')
+					}, 1420);
+					notification_timeout = setTimeout(function() {
+						notification_element.css('display', 'none')
+						notification_timeout = -1
+					}, 4000);
 				}
 			};
 

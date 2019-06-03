@@ -45,6 +45,7 @@ def home(request):
                   html_message=html_message,
                   fail_silently=False)
         return render(request, "Products/homepage.html", context)
+    
     return render(request, "Products/homepage.html", context)
 
 
