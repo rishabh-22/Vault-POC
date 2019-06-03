@@ -1,7 +1,10 @@
-from itertools import count
 
+import json
+
+from django.http import JsonResponse
 from django.shortcuts import render
 from Products.models import Product
+from Orders.models import Order
 
 
 def checkout(request):
@@ -23,21 +26,30 @@ def get_cart_items(request):
 
   
 def orders(request):
-    context = {'products': get_cart_items(request)}
-    return render(request, 'Orders/orders.html', context=context)
+    if request.method == 'POST':
+        address = json.loads(request.body)['address']
+        data = request.session['cart']
+        for key, value in data.items():
+            product_id = int(value['pk'])
+            qty = int(value['qty'])
+            ord = Order(
+                buyer=request.user,
+                product=Product.objects.get(pk=product_id),
+                quantity=qty,
+                shipping_address=address,
+            )
+            ord.save()
+        return JsonResponse({'success': True})
 
-    # if request.method == 'POST':
-    #     customer = request.user.username
-    #     address = request.POST.get('shipping_address')
-    #     data = request.session['cart']
-    #     for key, value in data.items():
-    #         product_id = value['pk']
-    #         product_id = int(product_id)
-    #         for value in value['qty']:
-    #
-    #
-    #
-    #
+    if request.method == 'GET':
+            context = {'products': get_cart_items(request)}
+
+            return render(request, 'Orders/orders.html', context=context)
+
+
+
+
+
     #         import pdb;pdb.set_trace()
-        return render(request, 'Orders/orders.html')
+#return render(request, 'Orders/orders.html')
 
