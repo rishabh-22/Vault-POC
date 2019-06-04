@@ -39,7 +39,8 @@ PAYMENT_CHOICES = (
 class Category(models.Model):
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     date_created = models.DateTimeField(auto_now=True)
-    date_modified = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now_add=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.category
@@ -49,7 +50,8 @@ class SubCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=20, choices=SUB_CATEGORY_CHOICES)
     date_created = models.DateTimeField(auto_now=True)
-    date_modified = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now_add=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -66,8 +68,8 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     modified_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=250, null=True, blank=True)
-    date_created = models.DateTimeField(auto_now=True)
-    date_modified = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now_add=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -85,28 +87,27 @@ class Tags(models.Model):
     color = models.CharField(max_length=20, choices=COLOR_CHOICES)
     weight = models.CharField(max_length=20)
     date_created = models.DateTimeField(auto_now=True)
-    date_modified = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now_add=True, null=True)
 
 
 class ProductImages(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField()
     date_created = models.DateTimeField(auto_now=True)
-    date_modified = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now_add=True, null=True)
 
 
 class Newsletter(models.Model):
     email = models.EmailField(max_length=70, null=False)
     is_subscribed = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now=True)
-    date_modified = models.DateTimeField(auto_now_add=True)
 
 
 class Wishlist(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer')
     item = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='item')
     date_created = models.DateTimeField(auto_now=True)
-    date_modified = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         unique_together = ['customer', 'item']
