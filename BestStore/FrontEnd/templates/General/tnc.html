@@ -1,8 +1,11 @@
+{% extends 'General/base.html' %}
+
+{% block content %}
 
 <!doctype html>
 <html>
 <head>
-<title>Terms and Conditions of beststore.com - FreePrivacyPolicy</title>
+<title>Terms and Conditions of beststore.com</title>
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,24 +39,8 @@ ga('send', 'pageview');
 <link href="https://www.freeprivacypolicy.com/assets//css/view.min.css?v=1537640048" rel="stylesheet" type="text/css" />
 
 </head>
-<body class="view-pages">
-<div id="wrap">
-
-
-    <div class="header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>
-                       BestStore
-                    </h1>
-                    <p>
-                        Terms and Conditions of beststore.com
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+<body class="">
+<div id="">
 
     <div class="policy">
         <div class="container">
@@ -135,3 +122,8 @@ ga('send', 'pageview');
 
 </body>
 </html>
+
+{% include 'General/footer.html' %}
+
+{% endblock %}
+
