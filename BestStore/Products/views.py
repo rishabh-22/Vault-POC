@@ -1,5 +1,4 @@
 import json
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -28,22 +27,23 @@ def home(request):
     # Save newsletter information
     if request.method == 'POST':
         mail = request.POST.get('news_letter_email')
-        user = Newsletter.objects.create(email=mail)
-
+        import pdb
+        pdb.set_trace()
         try:
-            User.objects.get(email=mail)
-            context['mail_exists'] = True
+            user = Newsletter.objects.get(email=mail)
+            context['mail_exists'] = False
         except Exception:
+            user = Newsletter.objects.create(email=mail)
+            user.save()
             context['Success'] = True
-        user.save()
-        plain_message = "Successfully Subscribed to our news letter!"
-        html_message = render_to_string('General/email.html')
-        send_mail(EMAIL_SUBJECT,
-                  plain_message,
-                  DUMMY_EMAIL,
-                  [mail],
-                  html_message=html_message,
-                  fail_silently=False)
+            plain_message = "Successfully Subscribed to our news letter!"
+            html_message = render_to_string('General/newsletter.html')
+            send_mail(EMAIL_SUBJECT,
+                      plain_message,
+                      DUMMY_EMAIL,
+                      [mail],
+                      html_message=html_message,
+                      fail_silently=False)
         return render(request, "Products/homepage.html", context)
     
     return render(request, "Products/homepage.html", context)
