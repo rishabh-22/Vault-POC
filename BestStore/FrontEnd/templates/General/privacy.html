@@ -1,3 +1,6 @@
+{% include 'General/base.html' %}
+
+{% block content %}
 
 <!doctype html>
 <html>
@@ -20,7 +23,6 @@
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="manifest" href="/manifest.json" />
-<meta name="msapplication-TileColor" content="#ffffff" />
 <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
 <meta name="theme-color" content="#ffffff" /><script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -36,26 +38,10 @@ ga('send', 'pageview');
 <link href="https://www.freeprivacypolicy.com/assets//css/view.min.css?v=1537640048" rel="stylesheet" type="text/css" />
 
 </head>
-<body class="view-pages">
+<body class="">
 <div id="wrap">
 
-
-    <div class="header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>
-                       Best Store
-                    </h1>
-                    <p>
-                        Privacy Policy of http://www.beststore.com
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="policy">
+    <div class="">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -178,3 +164,8 @@ ga('send', 'pageview');
 
 </body>
 </html>
+
+{% include 'General/footer.html' %}
+
+{% endblock %}
+
