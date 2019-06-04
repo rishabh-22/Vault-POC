@@ -30,7 +30,7 @@
 								<td><a class="anchorjs-link" href="/"><h1 id="h2.-bootstrap-heading">Your Wish List</h1></a></td>
 							</tr>
 							<tr>
-								<td><a class="anchorjs-link" href="/"><h1 id="h3.-bootstrap-heading">Reset Password</h1></a></td>
+								<td><a class="anchorjs-link" href="{% url 'change_password' %}"><h1 id="h3.-bootstrap-heading">Change Password</h1></a></td>
 							</tr>
 							{% if user.is_authenticated %}
 							<tr>

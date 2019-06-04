@@ -1,0 +1,135 @@
+{% extends 'General/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Your Wishlist</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="{% url 'homepage' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="#">Wishlist</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section><br>
+    <!-- End Banner Area -->
+
+
+<section class="cart-area">
+	<div class="container">
+	    <div class="row">
+		    <div class="col-lg-12">
+                <form role="form" method="POST">
+                    {% csrf_token %}
+                    {% if no_item_found %}
+                        <div class="" style="background-color:#f7f7f7;" align="center"><br>
+                            <h3>No items found. Add something to cart.</h3><br>
+                            <a class="primary-btn" href="{% url 'products' %}">Continue Shopping</a><br><br>
+                        </div>
+                        {% else %}
+                    {% for item in items %}
+                    <div class="row" style="background-color:#f7f7f7;">
+                        <div class="col-lg-4 col-sm-6" style="margin-bottom: 13px;">
+                            <div class="" style="text-align:center; padding: 13px 0px 0px 0px;">
+                                    <img style="border: 2px solid black; border-radius:10px;"
+                                        height="200px" width="200px" class="img-fluid" src="{{ item.item.productimages_set.first.image.url }}" alt="Image">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <div class="single-product" style="padding: 20px 0px 0px 0px;">
+                                <div class="product-details">
+                                    <h3>{{item.item.name }}</h3><hr color="#777777">
+                                    <div class="price">
+                                        <span>Price : </span>
+                                        <span>$ {{ item.item.price }}</span>
+                                    </div><br>
+                                    <div class="price" style="position: absolute;">
+                                        <h6>Description</h6>
+                                        <div>{{ item.item.description }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6" style="padding: 20px 0px 0px 0px;">
+                            <div class="button-group-area mt-40" style="text-align:center">
+                                <a>
+                                    <button type="button" class="btn btn-primary add-item"
+                                            style="margin-top:50px; width:70%;">Add to Cart</button>
+                                </a><br><br>
+                                    <button id="remove-btn" onclick="abc({{item.item.id}})" type="button"
+                                            class="btn btn-danger" style="width:70%;">Remove</button><br>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px"></div>
+                    {% endfor %}
+                </form><br>
+		    </div>
+            <div class="checkout_btn_inner d-flex align-items-center" style="margin-left:757px;">
+                <a class="primary-btn" href="{% url 'products' %}">Continue Shopping</a>&nbsp;&nbsp;&nbsp;
+            </div>
+            {% endif %}
+	    </div>
+	</div><br>
+
+</section>
+
+
+    <!--================End Cart Area =================-->
+<script
+src="https://code.jquery.com/jquery-1.12.4.js"
+integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+crossorigin="anonymous"></script>
+
+
+<script>
+function abc(obj){
+    var token = '{{ csrf_token }}'
+     $.ajax({
+                headers: {"X-CSRFToken": token},
+                url: '/delete-item/' + obj +'/',
+                data: {'id':obj},
+                type: 'POST',
+                success: function(response) {
+                    window.location.reload();
+                    $(html).html(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+}
+function add_cart(obj)
+{
+    var token = '{{ csrf_token }}'
+     $.ajax({
+                headers: {"X-CSRFToken": token},
+                url: '/cart-add/' + obj +'/',
+                data: {'id':obj},
+                type: 'POST',
+                success: function(response) {
+                    window.location.reload();
+                    $(html).html(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+}
+</script>
+
+
+
+{% endblock content %}
+
+{% block scroll_js %}
+<script type="text/javascript">
+    $("html,body").scrollTop(320);
+</script>
+{% endblock scroll_js%}

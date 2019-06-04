@@ -97,3 +97,9 @@ class Newsletter(models.Model):
     email = models.EmailField(max_length=70, null=False)
 
 
+class Wishlist(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer')
+    item = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='item')
+
+    class Meta:
+        unique_together = ['customer', 'item']

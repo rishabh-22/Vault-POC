@@ -224,7 +224,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 									</div>
 								</ul>
 							</li>
-							<li><a href="{% url 'homepage' %}">Contact Us</a></li>
+							<li><a href="{% url 'contact' %}">Contact Us</a></li>
 						</ul>
 					</div>
 					</nav>
@@ -297,7 +297,8 @@ $( document ).ready(function() {
 						$('.loader').css('display', 'none')
 						$("#blockDiv").css('display', 'none')
 						notification_element.css('display', 'block')
-						$('#total-price-total').html('$0.00')
+						$('#order-total-order').html('$0.00')
+						$('#order-final-table').css("display", "none");
 						empty_cart_header(0, 0)
 						empty_checkout_box()
 					}, 1420);

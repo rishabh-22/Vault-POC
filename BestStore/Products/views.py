@@ -1,11 +1,13 @@
 import json
+
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.views.generic import ListView
-from .models import Product, Category, SubCategory, Newsletter, Tags
-from django.http import JsonResponse, Http404, HttpResponse
-from django.shortcuts import render
+from .models import Product, Category, SubCategory, Newsletter, Tags, Wishlist
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from collections import OrderedDict
 from BestStore.settings import PRODUCTS_PER_PAGE,\
@@ -25,8 +27,6 @@ def home(request):
 
     # Save newsletter information
     if request.method == 'POST':
-        import pdb;
-        pdb.set_trace()
         mail = request.POST.get('news_letter_email')
         user = Newsletter.objects.create(email=mail)
 
@@ -266,3 +266,58 @@ def filter_listings(request):
                 'message': "No products found!"
             }
     return render(request, 'Products/product_listings.html', context=info)
+
+
+@login_required
+def wishlist_items(request):
+    try:
+        user = User.objects.get(email=request.user.email)
+        items = Wishlist.objects.filter(customer=request.user)
+        if not len(items) == 0:
+            context = {'items': items}
+        else:
+            context = {'no_item_found': True}
+    except User.DoesNotExist:
+        return redirect('Auth:loginform')
+    return render(request, 'Products/wishlist.html', context)
+
+
+def add_to_wishlist(request, pk):
+    if request.user.is_authenticated:
+        item = Product.objects.get(id=pk)
+        try:
+            Wishlist.objects.get(item=item)
+            return HttpResponse('Item Already Exists in your Wishlist')
+        except Wishlist.DoesNotExist:
+            Wishlist.objects.create(customer=request.user, item=item)
+            return HttpResponse('Item Added To Wishlist successfully')
+    else:
+        return redirect('loginform')
+
+
+@login_required
+def add_wishlist_to_cart(request, product_id):
+    #cart_add(request, product_id)
+    delete_from_wishlist(request, product_id)
+    return HttpResponse(wishlist_items(request))
+
+
+@login_required
+def delete_from_wishlist(request, pk):
+    try:
+        user = User.objects.get(email=request.user.email)
+        item = Wishlist.objects.get(item_id=pk)
+        item.delete()
+        items = Wishlist.objects.filter(customer=request.user)
+        context = {'items': items}
+
+        if not len(items) == 0:
+            if request.method == 'POST':
+                Wishlist.objects.filter(id=pk).delete()
+                context = {'items': items}
+        else:
+            context = {'no_item_found': True}
+        return HttpResponse(wishlist_items(request))
+    except User.DoesNotExist:
+        return redirect('loginform')
+
