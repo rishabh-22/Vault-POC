@@ -68,6 +68,9 @@
 					<div class="occasion-cart">
 						<a class="add-item" data-pk="{{object.id}}" data-product-detail='true' data-price="{{object.price}}" data-qty="1" href="#">add to cart </a>
 					</div>
+					<div style="float:right">
+					<a href="{% url 'add_to_wishlist' object.id %}">Add To Wishlist </a>
+					</div>
 
 						<div class="clearfix"> </div>
 					</div>
