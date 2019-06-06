@@ -7,9 +7,9 @@
   		 Success ! You have subscribed for out newsletter
 	</div>
 	{% endif %}
-	{% if mail_exists %}
+	{% if mail_exists is False %}
 	<div class="alert alert-danger">
-  		 Oops ! Something went wrong !
+  		 Hey ! We already have you in our database.
 	</div>
 	{% endif %}
 
