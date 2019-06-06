@@ -3,7 +3,7 @@
 {% block content %}
 <style>
 a:hover {
-  color: red;
+  color: #CEEBFB;
 }
 a:link {
 color:white;
@@ -29,46 +29,47 @@ opacity: 0.7;
 <div class="typo">
 	<div class="container">
 		<div class="typo-grids">
-			<h3 class="title animated wow zoomIn" data-wow-delay=".5s">{{ firstname }} 's Profile</h3>
+			<h3 class="title animated wow zoomIn" data-wow-delay=".5s">{{ firstname }} 's Settings</h3>
 			<p class="est animated wow zoomIn" data-wow-delay=".5s">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
 				deserunt mollit anim id est laborum.</p>
 			<div class="grid_3 grid_4 animated wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="500ms">
 				<h3 class="hdg">Account</h3>
 				<div class="bs-example">
-					<div class="row" style="float:left">
+
+					<div class="row" style="float:left;margin-left:20px">
 						<div class="col s12 m5">
 							<div style="background:teal; height: 120px; width:300px	">
-							<center><img src="https://image.flaticon.com/icons/png/512/62/62381.png" height="60px" width="60px"></center>
+								<center><img src="https://cdn1.iconfinder.com/data/icons/line-essentials-74/20/3608-512.png" height="60px" width="60px"></center>
 							<span class="white-text">
-								<center><a class="anchorjs-link" href="{% url 'order_display' %}"><h1 id="h1.-bootstrap-heading">Your Orders</h1></a></center>
-							</span>
+							<center>	<a class="anchorjs-link" href="{% url 'change_password' %}"><h1 id="h3.-bootstrap-heading">Change Password</h1></a></center>
+						</span>
 							</div>
-
 						</div>
 					</div>
-
-					<div class="row" style="float:left;margin-left:40px">
+					{% if user.is_authenticated %}
+					<div class="row" style="float:left;margin-left:20px">
 						<div class="col s12 m5">
 							<div style="background:teal; height: 120px; width:300px	">
-								<center><img src="https://static.thenounproject.com/png/1381335-200.png" height="60px" width="60px"></center>
+								<center><img src="https://cdn4.iconfinder.com/data/icons/web-hosting-6/32/Update_Contact-512.png" height="60px" width="60px"></center>
 							<span class="white-text">
-							<center><a class="anchorsjs-link" href="#"><h1 id="h2.-bootstrap-heading">Your Wish List</h1></a></center>
+			<center>	<a class="anchorjs-link" href="{% url 'update_profile' user.id %}"><h1 id="h4.-bootstrap-heading">Update Profile</h1></a></center>
 						</span>
 							</div>
 						</div>
 					</div>
 
-					<div class="row" style="float:left;margin-left:40px">
+					<div class="row" style="float:left;margin-left:20px">
 						<div class="col s12 m5">
 							<div style="background:teal; height: 120px; width:300px	">
-								<center><img src="https://cdn4.iconfinder.com/data/icons/forgen-phone-settings/48/setting-512.png" height="60px" width="60px"></center>
+								<center><img src="https://cdn4.iconfinder.com/data/icons/eldorado-user/40/delete_profile-512.png" height="60px" width="60px"></center>
 							<span class="white-text">
-								<center>	<a class="anchorjs-link" href="{% url 'settings' %}"><h1 id="h6.-bootstrap-heading">Settings</h1></a></center>
+				<center>	<a class="anchorjs-link" href="{% url 'delete_profile' user.id %}"><h1 id="h5.-bootstrap-heading">Delete Profile</h1></a></center>
 						</span>
 							</div>
 						</div>
 					</div>
 
+					{% endif %}
 				</div>
 
 			</div>

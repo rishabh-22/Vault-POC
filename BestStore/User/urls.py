@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import user_dashboard, UpdateUserProfile, DeleteUserProfile, contact_us, change_password, privacy, tnc
+from .views import user_dashboard, UpdateUserProfile, DeleteUserProfile, contact_us, change_password, privacy, tnc, settings
 
 urlpatterns = [
     path('dashboard/', user_dashboard, name='dashboard'),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('change_password/', change_password, name='change_password'),
     path('privacy-policy/', privacy, name='privacy_policy'),
     path('terms-conditions/', tnc, name='terms_conditions'),
+    path('settings/ ', settings, name='settings'),
 ]
