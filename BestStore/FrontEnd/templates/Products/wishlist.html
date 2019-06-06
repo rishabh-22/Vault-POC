@@ -44,7 +44,7 @@
                         <div class="col-lg-4 col-sm-6">
                             <div class="single-product" style="padding: 20px 0px 0px 0px;">
                                 <div class="product-details">
-                                    <h3>{{item.item.name }}</h3><hr color="#777777">
+                                    <a href="{% url 'detail' item.item.slug %}" style="color:black;"><h3>{{item.item.name }}</h3><hr color="#777777"></a>
                                     <div class="price">
                                         <span>Price : </span>
                                         <span>$ {{ item.item.price }}</span>
@@ -58,11 +58,11 @@
                         </div>
                         <div class="col-lg-4 col-sm-6" style="padding: 20px 0px 0px 0px;">
                             <div class="button-group-area mt-40" style="text-align:center">
-                                <a>
+                                <a  data-pk="{{item.item.id}}" data-price="{{item.item.price}}" class="add-item">
                                     <button type="button" class="btn btn-primary add-item"
-                                            style="margin-top:50px; width:70%;">Add to Cart</button>
+                                            style="margin-top:50px; width:70%;" id="{{item.item.id}}">Add To Cart</button>
                                 </a><br><br>
-                                    <button id="remove-btn" onclick="abc({{item.item.id}})" type="button"
+                                    <button id="remove-btn" onclick="remove({{item.item.id}})" type="button"
                                             class="btn btn-danger" style="width:70%;">Remove</button><br>
                             </div>
                         </div>
@@ -88,8 +88,12 @@ integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
 crossorigin="anonymous"></script>
 
 
-<script>
-function abc(obj){
+<script type='text/javascript'>
+
+
+
+
+function remove(obj){
     var token = '{{ csrf_token }}'
      $.ajax({
                 headers: {"X-CSRFToken": token},
@@ -105,23 +109,136 @@ function abc(obj){
                 }
             });
 }
-function add_cart(obj)
-{
-    var token = '{{ csrf_token }}'
-     $.ajax({
-                headers: {"X-CSRFToken": token},
-                url: '/cart-add/' + obj +'/',
-                data: {'id':obj},
-                type: 'POST',
-                success: function(response) {
-                    window.location.reload();
-                    $(html).html(response);
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
-}
+
+current_cart_qty = '{{total_qty}}'
+current_cart_price = '{{total_price}}'
+notification_timeout = -1
+notification_element = $('#cart-add-failure')
+$( document ).ready(function() {
+
+	$('#empty-cart').click(function(evt) {
+		evt.preventDefault()
+		if (parseInt(current_cart_qty) > 0) {
+			if (notification_timeout !== -1) {
+				clearTimeout(notification_timeout)
+			}
+			notification_element.css('display', 'none')
+			$('.loader').css('display', 'block')
+			$('#blockDiv').css('display', 'block')
+			var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					res = JSON.parse(this.responseText)
+					if (res['success'] === true) {
+
+						current_cart_qty = 0
+						current_cart_price = 0
+
+						notification_element = $('#cart-empty-success')
+					}
+					setTimeout(function() {
+						$('.loader').css('display', 'none')
+						$("#blockDiv").css('display', 'none')
+						notification_element.css('display', 'block')
+						$('#order-total-order').html('$0.00')
+						$('#order-final-table').css("display", "none");
+						empty_cart_header(0, 0)
+						empty_checkout_box()
+					}, 1420);
+					notification_timeout = setTimeout(function() {
+						notification_element.css('display', 'none')
+						notification_timeout = -1
+					}, 4000);
+				}
+			};
+
+			xmlhttp.open("GET", "/api/product/cart/empty/");
+			xmlhttp.send();
+		}
+	})
+
+	$("#prod").mouseover(function(){
+		$("#new_display").css("display", "block");
+	})
+
+	$("#bs-megadropdown-tabs").mouseleave(function(){
+		$("#new_display").css("display", "none");
+	})
+
+
+	$('.add-item').click(function(evt) {
+		evt.preventDefault()
+
+
+
+		if (notification_timeout !== -1) {
+			clearTimeout(notification_timeout)
+		}
+		notification_element.css('display', 'none')
+		$('.loader').css('display', 'block')
+		$('#blockDiv').css('display', 'block')
+		pk = this.id
+		price = evt.target.getAttribute('data-price')
+		qty = evt.target.getAttribute('data-qty') || 1
+
+
+
+
+		var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				res = JSON.parse(this.responseText)
+				notification_element = $('#cart-add-failure')
+				if (res['success']) {
+					notification_element = $('#cart-add-success')
+				}
+				setTimeout(function() {
+					$('.loader').css('display', 'none')
+					$("#blockDiv").css('display', 'none')
+					update_cart_header(parseInt(price), parseInt(qty))
+					notification_element.css('display', 'block')
+				}, 1420);
+				notification_timeout = setTimeout(function() {
+					notification_element.css('display', 'none')
+					notification_timeout = -1
+				}, 4000);
+			}
+		};
+
+		xmlhttp.open("GET", "/api/product/cart/update/"+pk+"/?qty="+qty);
+		xmlhttp.send();
+	})
+
+	var update_cart_header = function(price, qty) {
+		current_cart_qty = parseInt(current_cart_qty) + qty
+		current_cart_price = parseInt(current_cart_price) + (qty*price)
+
+		$('#cart-qty').html(current_cart_qty)
+		$('#cart-price').html(current_cart_price)
+	}
+
+	var empty_cart_header = function(price, qty) {
+		if (price === 0 && qty === 0) {
+			$('#cart-qty').html('0')
+			$('#cart-price').html('0')
+		}
+		$('.rem1').css('display', 'none')
+	}
+
+	function empty_checkout_box() {
+		var checkout_items = $('.checkout-box-items')
+		if (checkout_items.length > 0) {
+			for (i=0; i<checkout_items.length; i++) {
+				$(checkout_items[i]).css('display', 'none')
+			}
+			$('#checkout-box-total-price').html('0')
+		}
+	}
+
+});
+
+
+
 </script>
 
 
