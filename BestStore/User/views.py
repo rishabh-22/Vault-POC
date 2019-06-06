@@ -110,3 +110,7 @@ def change_password(request):
 
     else:
         return render(request, 'Auth/change_password.html')
+
+
+def settings(request):
+    return render(request, 'User/settings.html')
