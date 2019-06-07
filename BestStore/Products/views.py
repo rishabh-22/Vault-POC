@@ -1,4 +1,6 @@
 import json
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -425,10 +427,12 @@ def add_to_wishlist(request, pk):
         item = Product.objects.get(id=pk)
         try:
             Wishlist.objects.get(item=item)
-            return HttpResponse('Item Already Exists in your Wishlist')
+            messages.error(request, "Item Already Exists in your Wishlist")
+            return redirect('wishlist')
         except Wishlist.DoesNotExist:
             Wishlist.objects.create(customer=request.user, item=item)
-            return HttpResponse('Item Added To Wishlist successfully')
+            messages.error(request, "Item Added To Wishlist successfully")
+            return redirect('products')
     else:
         return redirect('loginform')
 
