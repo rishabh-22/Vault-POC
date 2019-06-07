@@ -27,8 +27,6 @@ def home(request):
     # Save newsletter information
     if request.method == 'POST':
         mail = request.POST.get('news_letter_email')
-        import pdb
-        pdb.set_trace()
         try:
             user = Newsletter.objects.get(email=mail)
             context['mail_exists'] = False
@@ -164,6 +162,7 @@ def product_listings(request):
         # Render template with context containing pagination details
         return render(request, 'Products/products.html', context=info)
 
+
 def cart_update(request, pk):
     """
        Add/Remove single product (possible multiple qty of product) to cart
@@ -173,6 +172,7 @@ def cart_update(request, pk):
        :return: Success message
     """
     if request.method == 'GET':
+
         sess = request.session
         qty = request.GET.get('qty', False)
         if qty:
@@ -185,12 +185,13 @@ def cart_update(request, pk):
             sess['cart'][str(pk)] = sess['cart'].get(str(pk), new_cart_item)
             new_qty = sess['cart'][str(pk)]['qty'] + int(qty)
             new_qty_above_max = Product.objects.get(pk=pk).quantity < new_qty
+            # import pdb; pdb.set_trace()
             if not new_qty_above_max:
                 # Sets new quantity to 0 in case quantity has gone negative
                 sess['cart'][str(pk)]['qty'] = int((abs(new_qty)+new_qty)/2)
                 return JsonResponse({'success': True})
             return JsonResponse({
-                'success': False, 
+                'success': False,
                 'msg': 'Max quantity of this product has already been added.'
             })
 
@@ -409,7 +410,6 @@ def filter_listings(request):
 @login_required
 def wishlist_items(request):
     try:
-        user = User.objects.get(email=request.user.email)
         items = Wishlist.objects.filter(customer=request.user)
         if not len(items) == 0:
             context = {'items': items}
@@ -433,17 +433,15 @@ def add_to_wishlist(request, pk):
         return redirect('loginform')
 
 
-@login_required
-def add_wishlist_to_cart(request, product_id):
-    #cart_add(request, product_id)
-    delete_from_wishlist(request, product_id)
-    return HttpResponse(wishlist_items(request))
+# @login_required
+# def add_wishlist_to_cart(request, product_id):
+#     delete_from_wishlist(request, product_id)
+#     return HttpResponse(wishlist_items(request))
 
 
 @login_required
 def delete_from_wishlist(request, pk):
     try:
-        user = User.objects.get(email=request.user.email)
         item = Wishlist.objects.get(item_id=pk)
         item.delete()
         items = Wishlist.objects.filter(customer=request.user)
