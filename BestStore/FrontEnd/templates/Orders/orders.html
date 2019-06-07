@@ -18,7 +18,9 @@
   margin-top: 24px;
 }
 </style>
+{% if products.items %}
 <h3 class="title animated wow zoomIn" data-wow-delay=".5s">{{ firstname }} 's Orders</h3>
+
 
 <div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
 	<table class="timetable_sub" style='margin-top: 24px;'>
@@ -78,7 +80,11 @@
 	</table>
 	{% csrf_token %}
 </div>
+{% else %}
 
+<center><h1>You have not placed any orders in the past !</h1></center>
+
+{% endif %}
 
 <br>
 <br>
