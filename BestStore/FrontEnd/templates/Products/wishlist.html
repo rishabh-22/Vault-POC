@@ -3,21 +3,17 @@
 
 {% block content %}
 
-    <!-- Start Banner Area -->
-    <section class="banner-area organic-breadcrumb">
-        <div class="container">
-            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-                <div class="col-first">
-                    <h1>Your Wishlist</h1>
-                    <nav class="d-flex align-items-center">
-                        <a href="{% url 'homepage' %}">Home<span class="lnr lnr-arrow-right"></span></a>
-                        <a href="#">Wishlist</a>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </section><br>
-    <!-- End Banner Area -->
+
+<div class="breadcrumbs">
+	<div class="container">
+		<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+			<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+			<li class="active">Wishlist</li>
+		</ol>
+	</div>
+</div>
+<br>
+
 {% include 'Products/messages.html' %}
 
 <section class="cart-area">
@@ -29,7 +25,9 @@
                     {% if no_item_found %}
                         <div class="" style="background-color:#f7f7f7;" align="center"><br>
                             <h3>No items found. Add something to cart.</h3><br>
-                            <a class="primary-btn" href="{% url 'products' %}">Continue Shopping</a><br><br>
+                        <div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
+					<a href="{% url 'products' %}"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Continue Shopping</a>
+				</div>
                         </div>
                         {% else %}
                     {% for item in items %}
@@ -38,7 +36,7 @@
                             <div class="" style="text-align:center; padding: 13px 0px 0px 0px;">
                                     <img style="border: 2px solid black; border-radius:10px;"
                                         height="200px" width="200px" class="img-fluid" src="{{ item.item.productimages_set.first.image.url }}" alt="Image">
-                                </a>
+
                             </div>
                         </div>
                         <div class="col-lg-4 col-sm-6">
@@ -59,11 +57,11 @@
                         <div class="col-lg-4 col-sm-6" style="padding: 20px 0px 0px 0px;">
                             <div class="button-group-area mt-40" style="text-align:center">
                                 <a  data-pk="{{item.item.id}}" data-price="{{item.item.price}}" class="add-item">
-                                    <button type="button" class="btn btn-primary add-item"
+                                    <button type="button" class="btn btn-info add-item"
                                             style="margin-top:50px; width:70%;" id="{{item.item.id}}">Add To Cart</button>
                                 </a><br><br>
                                     <button id="remove-btn" onclick="remove({{item.item.id}})" type="button"
-                                            class="btn btn-danger" style="width:70%;">Remove</button><br>
+                                            class="btn btn-warning" style="width:70%;">Remove</button><br>
                             </div>
                         </div>
                     </div>
@@ -71,9 +69,10 @@
                     {% endfor %}
                 </form><br>
 		    </div>
-            <div class="checkout_btn_inner d-flex align-items-center" style="margin-left:757px;">
-                <a class="primary-btn" href="{% url 'products' %}">Continue Shopping</a>&nbsp;&nbsp;&nbsp;
-            </div>
+
+            <div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
+					<a href="{% url 'products' %}"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Continue Shopping</a>
+				</div>
             {% endif %}
 	    </div>
 	</div><br>
@@ -242,7 +241,7 @@ $( document ).ready(function() {
 </script>
 
 
-
+{% include 'General/footer.html' %}
 {% endblock content %}
 
 {% block scroll_js %}

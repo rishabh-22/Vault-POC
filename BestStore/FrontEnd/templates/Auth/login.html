@@ -27,6 +27,15 @@
 					</div>
 					<input type="submit" value="Login" id='login-button'>
 				</form>
+				<p><strong>-- OR --</strong></p>
+				<center>
+				<img src="https://cdn.iconscout.com/icon/free/png-256/github-153-675523.png" width="40px" height="40px">
+				<a class="btn btn-primary" href="{% url 'social:begin' 'github' %}">Login with GitHub</a><br>
+				</center>
+				<center>
+				<img src="http://icons.iconarchive.com/icons/danleech/simple/1024/facebook-icon.png" width="30px" height="30px">
+				<a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a><br>
+				</center>
 			</div>
 			<h4 class="animated wow slideInUp" data-wow-delay=".5s">For New People</h4>
 			<p class="animated wow slideInUp" data-wow-delay=".5s"><a href="{% url 'registerform' %}">Register Here</a> (Or) go back to <a href="{% url 'homepage' %}">Home<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></p>

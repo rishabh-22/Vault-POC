@@ -209,7 +209,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												<h6> Category </h6>
 												{% for db_name, item in category_choices %}
 												<li>
-													<a class="filter_value" href="/products/?search={{ item }}" name="filter_value" value="{{item}}">
+													<a class="filter_value" href="/products/filter/?filter_category={{ item }}" name="filter_value" value="{{item}}">
 														{{ item }}
 													</a>
 												</li>
@@ -224,7 +224,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												{% for db_name, item in sub_category_choices %}
 
 													<li>
-														<a class="filter_value" href="/products/?search={{ item }}" name="filter_value" value="{{ item }}">
+														<a class="filter_value" href="/products/filter/?filter_sub_category={{ item }}" name="filter_value" value="{{ item }}">
 															{{ item }}
 														</a>
 													</li>
