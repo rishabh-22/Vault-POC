@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import user_login, logout_view, register_user, verify_user_email, render_login_form, render_register_form
+from .views import user_login, logout_view, register_user, verify_user_email, render_login_form, render_register_form, social_login
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
     path('password-reset-complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name='Auth/password_reset_complete.html'),
          name='password_reset_complete'),
+    path('social_login/', social_login, name='social_login'),
 ]

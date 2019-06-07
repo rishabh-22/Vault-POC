@@ -141,3 +141,7 @@ def logout_view(request):
     """
     logout(request)
     return redirect("homepage")
+
+
+def social_login(request):
+    return render(request, 'Auth/social_auth.html')

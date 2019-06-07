@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'Products',
     'Auth',
     'User',
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'BestStore.urls'
@@ -70,6 +72,8 @@ TEMPLATES = [
                 'Products.cart_context.add_session_cart',
                 'Products.category_context.add_category_context',
                 'User.user_context.add_user_firstname',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -77,6 +81,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BestStore.wsgi.application'
 
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -148,3 +158,13 @@ EMAIL_SUBJECT = 'Best Store Account Confirmation'
 
 PAGINATION_URL = '/products/?page='
 PRODUCTS_PER_PAGE = 6
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'homepage'
+
+SOCIAL_AUTH_GITHUB_KEY = 'f6f4bec6359a3f2c24be'
+SOCIAL_AUTH_GITHUB_SECRET = '1db4fd6def1a42360cb339cf6c68b6962c6b4e0b'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '2170322016419033'
+SOCIAL_AUTH_FACEBOOK_SECRET = '91019fc8ca3d60d34361686efb2a72f7'
