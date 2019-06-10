@@ -342,6 +342,44 @@
 </div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
+
+<br/><br/>
+<table cellpadding="0" cellspacing="0" class="social_icons" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" valign="top" width="100%">
+<tbody>
+<tr style="vertical-align: top;" valign="top">
+<td style="word-break: break-word; vertical-align: top; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; border-collapse: collapse;" valign="top">
+<table class="timetable_sub" style='margin-top: 24px;'>
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Quantity</th>
+				<th>Product Name</th>
+				<th>Product Price</th>
+				<th>Order Price</th>
+			</tr>
+		</thead>
+		{% for key, data in products.items %}
+		<tr class="rem1" id='product-{{data.product.id}}'>
+			<td class="invert-image"><a href="single.html"><img src="{{data.product.productimages_set.first.image.url}}" alt=" " style='height: 42px !important; width: 42px !important;' class="img-responsive" /></a></td>
+			<td class="invert">
+					<div class="quantity">
+					<div class="quantity-select">
+						<div class="entry value" id='{{data.product.id}}-product-qty'><span>{{data.qty}}</span></div>
+					</div>
+				</div>
+			</td>
+			<td class="invert">{{data.product.name}}</td>
+			<td class="invert">${{data.product.price}}.00</td>
+			<td class="invert product-order" data-price='{{data.product.price}}' data-qty='{{data.qty}}'></td>
+		</tr>
+		{% endfor %}
+
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<br/><br/>
 <div align="center" class="button-container" style="padding-top:20px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
 <a href="{{url 'Products:homepage' }}" style="-webkit-text-size-adjust: none; text-decoration: none; display: inline-block; color: #ffffff; background-color: #fc7318; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; width: auto; width: auto; border-top: 1px solid #fc7318; border-right: 1px solid #fc7318; border-bottom: 1px solid #fc7318; border-left: 1px solid #fc7318; padding-top: 10px; padding-bottom: 10px; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif; text-align: center; mso-border-alt: none; word-break: keep-all;" target="_blank"><span style="padding-left:40px;padding-right:40px;font-size:16px;display:inline-block;">
 <span id='link-button' style="font-size: 16px; line-height: 32px;"><strong>Continue Shopping</strong></span>
@@ -364,18 +402,6 @@
 <!--[if (!mso)&(!IE)]><!-->
 <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:20px; padding-bottom:60px; padding-right: 0px; padding-left: 0px;">
 <!--<![endif]-->
-<table cellpadding="0" cellspacing="0" class="social_icons" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" valign="top" width="100%">
-<tbody>
-<tr style="vertical-align: top;" valign="top">
-<td style="word-break: break-word; vertical-align: top; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; border-collapse: collapse;" valign="top">
-<table activate="activate" align="center" alignment="alignment" cellpadding="0" cellspacing="0" class="social_table" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: undefined; mso-table-tspace: 0; mso-table-rspace: 0; mso-table-bspace: 0; mso-table-lspace: 0;" to="to" valign="top">
-<tbody>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px; font-family: Tahoma, Verdana, sans-serif"><![endif]-->
 <div style="color:#555555;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;line-height:150%;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
 <div style="font-size: 12px; line-height: 18px; color: #555555; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif;">

@@ -34,14 +34,17 @@ def orders(request):
     if request.method == 'POST':
         address = json.loads(request.body)['address']
         data = request.session['cart']
+
         for key, value in data.items():
             product_id = int(value['pk'])
             qty = int(value['qty'])
+            ord_price = Product.objects.get(pk=product_id).price
             ord = Order(
                 buyer=request.user,
                 product=Product.objects.get(pk=product_id),
                 quantity=qty,
                 shipping_address=address,
+                order_price=ord_price,
             )
             ord.save()
         del request.session['cart']
