@@ -2,7 +2,7 @@
 import json
 
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from Products.models import Product
 from Orders.models import Order
 
@@ -51,3 +51,10 @@ def orders(request):
     if request.method == 'GET':
             context = {'products': get_cart_items(request)}
             return render(request, 'Orders/orders.html', context=context)
+
+
+def cancel_order(request, pk):
+    new_status = Order.objects.get(pk=pk)
+    new_status.status = 'C'
+    new_status.save()
+    return redirect('order_display')
