@@ -12,8 +12,8 @@
 		</div>
 	</div>
 	<div class="products" >
-		<div class="container" style="border: 1px solid green;">
-				<div class="products-right-grids-bottom">
+		<div class="container">
+
 					{% for product in featured %}
 					<div class="col-md-4 products-right-grids-bottom-grid" style='margin-bottom: 8px; margin-top: 8px;'>
 						<div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
@@ -26,7 +26,7 @@
 							<h4><a href="single.html">{{product.name}}</a></h4>
 							<div class="simpleCart_shelfItem products-right-grid1-add-cart">
 								<p style='text-align: center;'>${{product.price}}</p>
-								<li><a href="/products/{{product.id}}/">Quick View</a></li>
+								<a href="/products/{{product.slug}}/">Quick View</a>
 							</div>
 						</div>
 					</div>
@@ -34,26 +34,6 @@
 				</div>
 			</div>
 		</div>
-{% if is_paginated %}
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-    {% endif %}
-    {% for i in paginator.page_range %}
-      {% if page_obj.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if page_obj.has_next %}
-      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
+
 {% include "General/footer.html" %}
 {% endblock %}

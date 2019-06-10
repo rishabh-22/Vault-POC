@@ -52,9 +52,11 @@
 					{% endfor %}
 				</table>
 			</div>
+			{% if request.user.is_anonymous is False%}
 			<div class="checkout-left">	
 				<div class="checkout-left-basket animated wow slideInLeft" data-wow-delay=".5s">
 					<a href='/orders/'><h4>Continue Checkout</h4></a>
+
 					<ul>
 						{% for key, data in products.items %}
 						<li class='checkout-box-items' id='checkout-item-{{data.product.id}}'>{{data.product.name}} &nbsp (qty. <div id='{{data.product.id}}-checkout-qty' style='display: inline !important;'>{{data.qty}}</div>)  <span>$<div id='{{data.product.id}}-checkout-price' style='display: inline !important;'>{{data.total_product_price}}</div>.00</span></li>
@@ -64,7 +66,7 @@
 				</div>
 
 				{% endif %}
-
+{% endif %}
 				<div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
 					<a href="{% url 'products' %}"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Continue Shopping</a>
 				</div>
