@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.urls import path, include
+from django.urls import path, include, re_path
 from .settings import MEDIA_ROOT, MEDIA_URL
 from django.contrib.staticfiles.urls import static
 
@@ -26,7 +26,7 @@ urlpatterns = [
     path('', include('Auth.urls')),
     path('', include('User.urls')),
     path('', include('Orders.urls')),
-    path(r'^oauth/', include('social_django.urls', namespace='social')),
+    re_path(r'^oauth/', include('social_django.urls', namespace='social')),
 ]
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
