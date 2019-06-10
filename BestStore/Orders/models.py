@@ -27,3 +27,4 @@ class Order(models.Model):
     quantity = models.IntegerField()
     shipping_address = models.CharField(max_length=100)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default='IP')
+    is_cancelled = models.BooleanField(default=False)

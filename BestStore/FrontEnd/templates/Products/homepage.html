@@ -205,7 +205,7 @@ margin: auto;
 							<div class="new-collections-grid1-image">
 								<a href="single.html" class="product-image"><img src="{{product.productimages_set.first.image.url}}" alt=" " height='170' width='200'></a>
 								<div class="new-collections-grid1-image-pos products-right-grids-pos">
-									<a href="/products/{{product.id}}/" style="margin-left: 44px !important;">Quick View</a>
+									<a href="/products/{{product.slug}}/" style="margin-left: 44px !important;">Quick View</a>
 								</div>
 							</div>
 							<h4><a href="single.html">{{product.name}}</a></h4>
@@ -215,7 +215,9 @@ margin: auto;
 						</div>
 					</div>
 					{% endfor %}
-					<a  href="{% url 'featured' %}"> View All Products </a>
+					<a  href="{% url 'featured' %}" style="float:right">
+						<img src="http://stpaulphesama.edu.in/wp-content/uploads/2017/05/view-all-icon.png" height="50px" width="100px">
+ 					</a>
 
 				</div>
 
