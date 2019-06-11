@@ -12,8 +12,8 @@ def checkout(request):
 
 
 def order_display(request):
-    import pdb;pdb.set_trace()
     context = {'your_orders': Order.objects.filter(buyer=request.user.id)}
+    import pdb;pdb.set_trace()
     return render(request, 'Orders/order_processing.html', context)
 
 

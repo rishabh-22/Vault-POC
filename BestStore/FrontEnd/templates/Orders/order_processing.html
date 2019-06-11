@@ -15,6 +15,11 @@
 	<div class="checkout">
 		<div class="container">
 			<div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
+				{% for orders in your_orders %}
+
+					{{ orders.transaction_id }} <br>
+
+				{% endfor %}
 					{% if your_orders.all %}
 						<table class="timetable_sub">
 					<thead>
@@ -27,8 +32,9 @@
 						</tr>
 					</thead>
                      {% for order in your_orders %}
+
 						<tr class="rem1" id='product-{{data.product.id}}'>
-						<td class="invert">{{order.product}}</td>
+						<td class="invert">{{order.id}}</td>
 						<td class="invert">{{order.shipping_address}}</td>
 						<td class="invert">${{order.product.price}}.00</td>
                         <td class="invert">{{ order.date }}</td>
