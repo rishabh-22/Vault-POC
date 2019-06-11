@@ -1,10 +1,13 @@
 
 import json
 
+from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render
 from Products.models import Product
 from Orders.models import Order
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 
 def checkout(request):
@@ -49,6 +52,11 @@ def orders(request):
             ord.save()
         del request.session['cart']
         request.session.modified = True
+        import pdb; pdb.set_trace()
+        email = request.user.email
+        html_message = render_to_string('Orders/order_confirm_template.html',)
+        plain_message = strip_tags(html_message)
+        send_mail("Order Conformation", plain_message, "rbtherib2@gmail.com", [email], html_message=html_message, fail_silently=False)
         return JsonResponse({'success': True})
 
     if request.method == 'GET':
