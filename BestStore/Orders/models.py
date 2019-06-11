@@ -67,6 +67,7 @@ class OrderDetail(models.Model):
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default='IP')
+    order_price = models.IntegerField(null=True)
     is_cancelled = models.BooleanField(default=False)
 
     def __str__(self):
