@@ -11,7 +11,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from collections import OrderedDict
-from BestStore.settings import PRODUCTS_PER_PAGE,\
+from BestStore.settings import PRODUCTS_PER_PAGE, \
     PAGINATION_URL, EMAIL_SUBJECT, DUMMY_EMAIL
 from .helper import *
 
@@ -45,59 +45,9 @@ def home(request):
                       html_message=html_message,
                       fail_silently=False)
         return render(request, "Products/homepage.html", context)
-    
+
     return render(request, "Products/homepage.html", context)
 
-
-# def product_listings(request):
-#     """
-#         List products via custom pagination algorithm
-#         :param request: Django's HTTP Request object
-#         :return: Rendered product list view with pagination
-#     """
-#     if request.method == 'GET':
-#         search_term = ""
-#         try:
-#             # Extract page parameter from page request and try to convert to int
-#             page = int(request.GET.get('page', 1))
-#         except ValueError:
-#             # If page argument is an alphabet this will set the page to 1
-#             page = 1
-#         # Grab all categories for filtering purposes on web page
-#         all_category = Category.objects.all()
-#         all_sub_category = SubCategory.objects.all()
-#         # Grab all products to paginate
-#         all_products = Product.objects.all()
-#
-#         # Search functionality
-#         if 'search' in request.GET:
-#             all_products = check_search(request, all_products, all_category, all_sub_category)
-#         # If no products are in database then we have nothing to show the user
-#         # Set appropriate values for pagination parameters
-#         products = list()
-#         prods_per_page = PRODUCTS_PER_PAGE
-#         total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
-#         if page < 1:
-#             page = 1
-#         elif page > total_pages:
-#             page = total_pages
-#         start_index = (page - 1) * prods_per_page
-#         end_index = start_index + prods_per_page
-#         if len(all_products) != 0:
-#             products = all_products[start_index: end_index]
-#
-#         # Set context variable for template to use to display the products and paginated navigation
-#         info = {
-#             'category': all_category,
-#             'product': products,
-#             'pages': range(1, total_pages + 1),
-#             'current_page': page,
-#             'prev': f'{PAGINATION_URL}{page - 1}' if page != 1 else '#',
-#             'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
-#             'search_term': search_term,
-#         }
-#         # Render template with context containing pagination details
-#         return render(request, 'Products/products.html', context=info)
 
 def product_listings(request):
     """
@@ -105,64 +55,140 @@ def product_listings(request):
         :param request: Django's HTTP Request object
         :return: Rendered product list view with pagination
     """
-    if request.method == 'GET':
-        search_term = ""
-        try:
-            # Extract page parameter from page request and try to convert to int
-            page = int(request.GET.get('page', 1))
-        except ValueError:
-            # If page argument is an alphabet this will set the page to 1
-            page = 1
-        # Grab all categories for filtering purposes on web page
-        all_category = Category.objects.all()
-        all_sub_category = SubCategory.objects.all()
-        # Grab all products to paginate
-        all_products = Product.objects.all()
-        category_selected = ''
-        # Search functionality
-        if 'search' in request.GET:
-            all_products = check_search(request, all_products, all_category, all_sub_category)
-        # If no products are in database then we have nothing to show the user
-        # Set appropriate values for pagination parameters
-        products = list()
-        prods_per_page = PRODUCTS_PER_PAGE
-        total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
-        if page < 1:
-            page = 1
-        elif page > total_pages:
-            page = total_pages
-        start_index = (page - 1) * prods_per_page
-        end_index = start_index + prods_per_page
-        if len(all_products) != 0:
-            products = all_products[start_index: end_index]
-        search_type = request.GET.get('search', None)
-        if search_type:
-            search_type = search_type.split(' [ in ')
-            search_name = search_type[0]
-            search_type = search_type[1].split(' ]')[0]
-            if search_type == 'Category':
-                category_selected = Category.objects.filter(category__icontains=search_name)
-                for i in range(0, len(category_selected[0].subcategory_set.all())):
-                    products_in_category = category_selected[0].subcategory_set.all()[i].product_set.all()
-                    products = list(chain(products, products_in_category))
-            if search_type == 'Sub-Category':
-                sub_category = SubCategory.objects.filter(title__icontains=search_name)[0]
-                products = sub_category.product_set.all()
-            if search_type == 'Products':
-                products = Product.objects.filter(name__icontains=search_name)
-        # Set context variable for template to use to display the products and paginated navigation
+    search_term = ""
+    filter = dict()
+    try:
+        # Extract page parameter from page request and try to convert to int
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        # If page argument is an alphabet this will set the page to 1
+        page = 1
+    # Grab all categories for filtering purposes on web page
+    all_category = Category.objects.all()
+    all_sub_category = SubCategory.objects.all()
+    # Grab all products to paginate
+    all_products = Product.objects.all()
+    filter['product'] = all_products
+    # Search functionality
+    if 'search' in request.GET:
+        filter = product_search(request)
+    if 'filter_category' in request.GET or 'filter_sub_category' in request.GET:
+        filter = filter_listings(request)
+    # If no products are in database then we have nothing to show the user
+    # Set appropriate values for pagination parameters
+    prods_per_page = PRODUCTS_PER_PAGE
+    total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
+    if page < 1:
+        page = 1
+    elif page > total_pages:
+        page = total_pages
+    start_index = (page - 1) * prods_per_page
+    end_index = start_index + prods_per_page
+    # Set context variable for template to use to display the products and paginated navigation
+    # import pdb; pdb.set_trace()
+    if not filter['product']:
         info = {
             'category': all_category,
-            'category_selected': category_selected,
-            'product': products,
+            'message': "No products found!",
+        }
+    else:
+        info = {
+            'category': all_category,
+            'category_selected': filter.get('category'),
+            'sub_category_selected': filter.get('sub_category'),
+            'product': filter.get('product'),
             'pages': range(1, total_pages + 1),
             'current_page': page,
             'prev': f'{PAGINATION_URL}{page - 1}' if page != 1 else '#',
             'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
             'search_term': search_term,
         }
-        # Render template with context containing pagination details
-        return render(request, 'Products/products.html', context=info)
+    # Render template with context containing pagination details
+    return render(request, 'Products/products.html', context=info)
+
+
+def product_search(request):
+    filter = dict()
+    search_type = request.GET.get('search', None)
+    try:
+        search_type = search_type.split(' [ in ')
+        search_name = search_type[0]
+        search_type = search_type[1].split(' ]')[0]
+        if search_type == 'Category':
+            filter['category'] = search_name
+        if search_type == 'Sub-Category':
+            filter['sub_category'] = search_name
+        filter = filter_products(**filter)
+    except IndexError:
+        search_type = 'Products'
+    if search_type == 'Products':
+        products = Product.objects.filter(name__icontains=search_name)
+        filter['product'] = products
+    return filter
+
+
+def filter_products(**filter):
+    products = set(Product.objects.all())
+    if filter.get('category'):
+        products_in_category = set(Category.objects.filter(category__icontains=filter['category'])[0].product_set.all())
+        products = products.intersection(products_in_category)
+    if filter.get('sub_category'):
+        products_in_sub_category = set(
+            SubCategory.objects.filter(title__icontains=filter['sub_category'])[0].product_set.all())
+        products = products.intersection(products_in_sub_category)
+    if filter.get('min_price_value'):
+        products_by_price = []
+        price_filter = Product.objects.filter(price__range=(filter['min_price_value'], filter['max_price_value']))
+        for i in range(0, len(price_filter)):
+            products_by_price.append(price_filter[i])
+        products = products.intersection(set(products_by_price))
+    if filter.get('min_weight_value'):
+        products_by_weight =[]
+        weight_filter = Product.objects.filter(tags__weight__range=(filter['min_weight_value'], filter['max_weight_value']))
+        for i in range(0, len(weight_filter)):
+            products_by_weight.append(weight_filter[i])
+        products = products.intersection(set(products_by_weight))
+    if filter.get('size') and filter.get('size') != 'All':
+        products_by_size = []
+        size_filter = Product.objects.filter(tags__size__icontains=filter['size'])
+        for i in range(0, len(size_filter)):
+            products_by_size.append(size_filter[i])
+        products = products.intersection(set(products_by_size))
+    if filter.get('color') and filter.get('size') != 'All':
+        products_by_color = []
+        color_filter = Product.objects.filter(tags__color__icontains=filter['color'])
+        for i in range(0, len(color_filter)):
+            products_by_color.append(color_filter[i])
+        products = products.intersection(set(products_by_color))
+    filter['product'] = products
+    return filter
+
+
+def filter_listings(request):
+    if request.method == 'GET':
+        filter = dict()
+        all_category = Category.objects.all()
+        all_products = Product.objects.all()
+        if request.GET.get('filter_category'):
+            filter['category'] = request.GET.get('filter_category', None)
+        if request.GET.get('filter_sub_category'):
+            filter['sub_category'] = request.GET.get('filter_sub_category', None)
+            category = SubCategory.objects.filter(title__icontains=filter['sub_category'])[0].category.category
+            filter['category'] = category
+        if request.GET.get('min_price_val'):
+            filter['min_price_value'] = request.GET.get('min_price_val', None)
+        if request.GET.get('max_price_val'):
+            filter['max_price_value'] = request.GET.get('max_price_val', None)
+        if request.GET.get('min_weight_val'):
+            filter['min_weight_value'] = request.GET.get('min_weight_val')
+        if request.GET.get('min_weight_val'):
+            filter['max_weight_value'] = request.GET.get('max_weight_val')
+        if request.GET.get('filter_size'):
+            filter['size'] = request.GET.get('filter_size')
+        if request.GET.get('filter_color'):
+            filter['color'] = request.GET.get('filter_color')
+        filter = filter_products(**filter)
+        return filter
 
 
 def cart_update(request, pk):
@@ -190,7 +216,7 @@ def cart_update(request, pk):
             # import pdb; pdb.set_trace()
             if not new_qty_above_max:
                 # Sets new quantity to 0 in case quantity has gone negative
-                sess['cart'][str(pk)]['qty'] = int((abs(new_qty)+new_qty)/2)
+                sess['cart'][str(pk)]['qty'] = int((abs(new_qty) + new_qty) / 2)
                 return JsonResponse({'success': True})
             return JsonResponse({
                 'success': False,
@@ -217,7 +243,7 @@ def cart_item_remove(request, pk=0):
             request.session.modified = True
             return JsonResponse({'success': True})
         except KeyError:
-            return JsonResponse({'success': False}) 
+            return JsonResponse({'success': False})
 
 
 class ProductDetailView(DetailView):
@@ -271,150 +297,16 @@ def auto_complete(request):
         sub_category_set = SubCategory.objects.filter(title__icontains=term)
         results = []
         for result in product_set:
-            results.append(result.name + " [ in Products]")
+            results.append(result.name + " [ in Products ]")
         for result in category_set:
-            results.append(result.category + " [ in Category]")
+            results.append(result.category + " [ in Category ]")
         for result in sub_category_set:
-            results.append(result.title + " [ in Sub-Category]")
+            results.append(result.title + " [ in Sub-Category ]")
         data = json.dumps(results)
     else:
         data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
-
-
-def filter_products(**filter):
-    product_list = []
-    products = set(Product.objects.all())
-    if filter.get('category'):
-        products_in_category = set(Category.objects.filter(category__icontains=filter['category'])[0].product_set.all())
-        products = products.intersection(products_in_category)
-
-    if filter.get('sub_category'):
-        products_in_sub_category = set(SubCategory.objects.filter(title__icontains=filter['sub_category'])[0].product_set.all())
-        products = products.intersection(products_in_sub_category)
-
-    if filter.get('min_price_value'):
-        products_by_price = []
-        price_filter = Product.objects.filter(price__range=(filter['min_price_value'], filter['max_price_value']))
-        for i in range(0, len(price_filter)):
-            products_by_price.append(price_filter[i])
-        products = products.intersection(set(products_by_price))
-    return products
-
-def filter_listings(request):
-    if request.method == 'GET':
-        try:
-            page = int(request.GET.get('page', 1))
-        except:
-            page = 1
-        products_list = []
-        products_by_price = []
-        prods_per_page = 6
-        filter = dict()
-        all_category = Category.objects.all()
-        all_products = Product.objects.all()
-        total_pages = ((abs(len(all_products))-1)//prods_per_page) + 1
-        if request.GET.get('filter_category'):
-            filter['category'] = request.GET.get('filter_category', None)
-        if request.GET.get('filter_sub_category'):
-            filter['sub_category'] = request.GET.get('filter_sub_category', None)
-            category = SubCategory.objects.filter(title__icontains=filter['sub_category'])[0].category.category
-            filter['category'] = category
-        if request.GET.get('min_price_val'):
-            filter['min_price_value'] = request.GET.get('min_price_val', None)
-        if request.GET.get('max_price_val'):
-            filter['max_price_value'] = request.GET.get('max_price_val', None)
-        products = filter_products(**filter)
-
-        if products:
-            info = {
-                'category': all_category,
-                'category_selected': filter.get('category'),
-                'sub_category_selected': filter.get('sub_category'),
-                'product': products,
-                'pages': range(1, total_pages + 1),
-                'current_page': page,
-                'prev': f'/products/?page={page - 1}' if page != 1 else '#',
-                'next': f'/products/?page={page + 1}' if page != total_pages else '#',
-            }
-        else:
-            info = {
-                'message': "No products found!"
-            }
-    return render(request, 'Products/products.html', context=info)
-
-#
-# def filter_listings(request):
-#     if request.method == 'GET':
-#         try:
-#             page = int(request.GET.get('page', 1))
-#         except:
-#             page = 1
-#         products_list = []
-#         products_by_price = []
-#         products_by_size = []
-#         products_by_color = []
-#         products_by_weight = []
-#         category_filter = ''
-#         sub_category_filter = ''
-#         all_category = Category.objects.all()
-#         all_products = Product.objects.all()
-#         prods_per_page = 6
-#         total_pages = ((abs(len(all_products))-1)//prods_per_page) + 1
-#         filter_value = request.GET.get('filter_category', None)
-#         if filter_value:
-#             category_filter = all_category.filter(category__icontains=filter_value)
-#             sub_category_filter = SubCategory.objects.filter(title__icontains=filter_value)
-#         if category_filter:
-#             products_in_category = category_filter[0].product_set.all()
-#             products_list = list(chain(products_list, products_in_category))
-#         if sub_category_filter:
-#             products_list = sub_category_filter[0].product_set.all()
-#         min_value = request.GET.get('min_price_val')
-#         max_value = request.GET.get('max_price_val')
-#         products = set(products_list)
-#         if min_value:
-#             price_filter = all_products.filter(price__range=(min_value, max_value))
-#             for i in range(0, len(price_filter)):
-#                 products_by_price.append(price_filter[i])
-#             products_by_price_set = set(products_by_price)
-#             all_products = set(all_products)
-#             products = products.intersection(products_by_price_set)
-#         # min_weight_value = request.GET.get('min_weight_val')
-#         # max_weight_value = request.GET.get('max_weight_val')
-#         # weight_filter = all_products.filter(tags__weight__range=(min_weight_value, max_weight_value))
-#         # for i in range(0, len(weight_filter)):
-#         #     products_by_weight.append(weight_filter[i])
-#         # size = request.GET.get('filter_size')
-#         # size_filter = all_products.filter(tags__size__icontains=size)
-#         # for i in range(0, len(size_filter)):
-#         #     products_by_size.append(size_filter[i])
-#         # color = request.GET.get('filter_color')
-#         # color_filter = all_products.filter(tags__color__icontains=color)
-#         # for i in range(0, len(color_filter)):
-#         #     products_by_color.append(color_filter[i])
-#         # products_by_size_set = set(products_by_size)
-#         # products_by_color_set = set(products_by_color)
-#         # products_by_weight_set = set(products_by_weight)
-#         # products = products.intersection(products_by_weight_set)
-#         # products = products.intersection(products_by_size_set)
-#         # products = products.intersection(products_by_color_set)
-#         if products:
-#             info = {
-#                 'category': all_category,
-#                 'category_selected': category_filter,
-#                 'product': products,
-#                 'pages': range(1, total_pages + 1),
-#                 'current_page': page,
-#                 'prev': f'/products/?page={page - 1}' if page != 1 else '#',
-#                 'next': f'/products/?page={page + 1}' if page != total_pages else '#',
-#             }
-#         else:
-#             info = {
-#                 'message': "No products found!"
-#             }
-#     return render(request, 'Products/products.html', context=info)
 
 
 @login_required
@@ -468,4 +360,3 @@ def delete_from_wishlist(request, pk):
         return HttpResponse(wishlist_items(request))
     except User.DoesNotExist:
         return redirect('loginform')
-
