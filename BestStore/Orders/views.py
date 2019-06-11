@@ -1,8 +1,11 @@
 import json
+from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from Products.models import Product
 from Orders.models import Order
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from Orders.models import OrderDetail
 
 
@@ -33,6 +36,7 @@ def get_cart_items(request):
 def orders(request):
     if request.method == 'POST':
         address = json.loads(request.body)['address']
+        email = request.user.email
         product = [Product.objects.get(id=int(item)) for item in request.session.get("cart", None) if item is not None]
         order = Order()
         order.buyer = request.user
@@ -45,6 +49,10 @@ def orders(request):
                                        product_id=products.id,
                                        )
             total_amount += products.price * request.session["cart"][str(products.id)]["qty"]
+        
+        html_message = render_to_string('Orders/order_confirm_template.html',)
+        plain_message = strip_tags(html_message)
+        send_mail("Order Conformation", plain_message, "rbtherib2@gmail.com", [email], html_message=html_message, fail_silently=False)
         return JsonResponse({'success': True})
 
     if request.method == 'GET':
