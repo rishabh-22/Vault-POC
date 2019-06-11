@@ -63,6 +63,7 @@ class Product(models.Model):
     description = models.CharField(max_length=100)
     price = models.IntegerField()
     quantity = models.IntegerField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     is_featured = models.BooleanField(default=False)

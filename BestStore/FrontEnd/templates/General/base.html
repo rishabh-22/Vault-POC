@@ -211,7 +211,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												<h6> Category </h6>
 												{% for db_name, item in category_choices %}
 												<li>
-													<a class="filter_value" href="/products/filter/?filter_category={{ item }}" name="filter_value" value="{{item}}">
+													<a class="filter_value" href="/products/?filter_category={{ item }}" name="filter_value" value="{{item}}">
 														{{ item }}
 													</a>
 												</li>
@@ -226,7 +226,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												{% for db_name, item in sub_category_choices %}
 
 													<li>
-														<a class="filter_value" href="/products/filter/?filter_sub_category={{ item }}" name="filter_value" value="{{ item }}">
+														<a class="filter_value" href="/products/?filter_sub_category={{ item }}" name="filter_value" value="{{ item }}">
 															{{ item }}
 														</a>
 													</li>
@@ -246,7 +246,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<div class="search-box">
 						<div id="sb-search" class="sb-search">
 							<form method="GET" id="ui_element" action="/products/">
-								{% csrf_token %}
 								<input  name="search" class="sb-search-input" placeholder="Enter your search term..." type="search" id="search">
 								<input class="sb-search-submit" type="submit" value="">
 								<span class="sb-icon-search"> </span>
