@@ -1,10 +1,9 @@
-
 import json
-
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from Products.models import Product
 from Orders.models import Order
+from Orders.models import OrderDetail
 
 
 def checkout(request):
@@ -13,6 +12,7 @@ def checkout(request):
 
 
 def order_display(request):
+    import pdb;pdb.set_trace()
     context = {'your_orders': Order.objects.filter(buyer=request.user.id)}
     return render(request, 'Orders/order_processing.html', context)
 
@@ -33,19 +33,18 @@ def get_cart_items(request):
 def orders(request):
     if request.method == 'POST':
         address = json.loads(request.body)['address']
-        data = request.session['cart']
-        for key, value in data.items():
-            product_id = int(value['pk'])
-            qty = int(value['qty'])
-            ord = Order(
-                buyer=request.user,
-                product=Product.objects.get(pk=product_id),
-                quantity=qty,
-                shipping_address=address,
-            )
-            ord.save()
-        del request.session['cart']
-        request.session.modified = True
+        product = [Product.objects.get(id=int(item)) for item in request.session.get("cart", None) if item is not None]
+        order = Order()
+        order.buyer = request.user
+        order.address = address
+        order.save()
+        total_amount = 0
+        for products in product:
+            OrderDetail.objects.create(order=order,quantity=request.session["cart"][str(products.id)]["qty"],
+                                       price=products.price,
+                                       product_id=products.id,
+                                       )
+            total_amount += products.price * request.session["cart"][str(products.id)]["qty"]
         return JsonResponse({'success': True})
 
     if request.method == 'GET':
