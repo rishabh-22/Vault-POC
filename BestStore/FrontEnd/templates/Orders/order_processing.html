@@ -15,38 +15,40 @@
 	<div class="checkout">
 		<div class="container">
 			<div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
-				{% for orders in your_orders %}
 
-					{{ orders.transaction_id }} <br>
+				{% if your_orders.all %}
 
-				{% endfor %}
-					{% if your_orders.all %}
-						<table class="timetable_sub">
+				{% for order in your_orders %}
+				<label>Transaction ID :</label>{{ order.transaction_id }} <br>
+				<table class="timetable_sub">
 					<thead>
 						<tr>
-							<th>Product</th>
-							<th>Shipping Address</th>
+							<th>Address</th>
+							<th>Payment Mode</th>
 							<th>Product Price</th>
                             <th>Ordering Date</th>
 							<th>Status</th>
 						</tr>
 					</thead>
-                     {% for order in your_orders %}
+						{% for orders in your_order_details %}
+						{% if order.transaction_id == orders.order.transaction_id %}
 
-						<tr class="rem1" id='product-{{data.product.id}}'>
-						<td class="invert">{{order.id}}</td>
-						<td class="invert">{{order.shipping_address}}</td>
-						<td class="invert">${{order.product.price}}.00</td>
-                        <td class="invert">{{ order.date }}</td>
-							{% if 'IP' == order.status %}
-							<td class="invert">In Processing | <a class="invert" href="{% url 'cancle_order' order.id %}">Cancel</a> </td>
-							{% else %}
-							<td class="invert">Cancelled</td>
-							{% endif %}
+							<tr class="rem1" id='product-{{data.product.id}}'>
+								<td class="invert">{{ order.shipping_address }}</td>
+								<td class="invert">{{ order.payment_type }}</td>
+								<td class="invert">${{ orders.price}}.00</td>
+								<td class="invert">{{ orders.created }}</td>
+								{% if 'IP' == order.status %}
+								<td class="invert">In Processing | <a class="invert" href="{% url 'cancle_order' order.id %}">Cancel</a> </td>
+								{% else %}
+								<td class="invert">Cancelled</td>
+								{% endif %}
 					</tr>
-					{% endfor %}
 
-					{% else %}
+							{% endif %}
+					{% endfor %}
+					{% endfor %}
+							{% else %}
 
 					<h1>You have not placed any order yet! </h1>
                     {% endif %}
