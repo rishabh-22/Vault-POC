@@ -115,3 +115,8 @@ def change_password(request):
 
 def settings(request):
     return render(request, 'User/settings.html')
+
+
+
+
+
