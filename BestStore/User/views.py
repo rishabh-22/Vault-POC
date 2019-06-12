@@ -6,7 +6,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, DeleteView
-from User.forms import ContactQueryForm
+from User.forms import ContactQueryForm, UserAddressForm
+from .models import UserAddress
 
 
 def user_dashboard(request):
@@ -115,3 +116,39 @@ def change_password(request):
 
 def settings(request):
     return render(request, 'User/settings.html')
+
+
+def add_address(request):
+    form = UserAddressForm()
+    if request.method == 'POST':
+        form = UserAddressForm(request.POST)
+        if form.is_valid():
+            # import pdb; pdb.set_trace()
+            form.instance.user = request.user
+            form.save()
+            messages.error(request, "Your address is saved successfully!")
+            return HttpResponseRedirect('/dashboard/')
+        else:
+            return render(request, 'User/add_address.html', {'form': form})
+
+    return render(request, 'User/add_address.html', {'form': form})
+
+
+def view_address(request):
+    try:
+        address = UserAddress.objects.filter(user=request.user)
+
+    except:
+        messages.error(request, "No saved addresses found for your account.")
+        return HttpResponseRedirect('/dashboard/')
+
+    return render(request, 'User/user_address.html', {'address': address})
+
+
+def delete_address(request, pk):
+
+    if request.method == 'POST':
+        add = UserAddress.objects.get(pk=pk)
+        add.is_deleted = True
+        add.save()
+    return HttpResponseRedirect('/dashboard/')
