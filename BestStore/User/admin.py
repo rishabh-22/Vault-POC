@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import UserAddress
+from .models import ContactQuery
 
 # Register your models here.
 
-admin.site.register(UserAddress)
+admin.site.register(ContactQuery)

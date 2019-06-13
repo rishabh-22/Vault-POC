@@ -75,6 +75,7 @@ def contact_us(request):
         form = ContactQueryForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.error(request, "Thankyou for your interest, we'll get back to you as soon as possible. Keep shopping with us! :)")
             return HttpResponseRedirect('/contact/')
         else:
             form = ContactQueryForm()
@@ -154,4 +155,5 @@ def delete_address(request, pk):
     if request.method == 'POST':
         add = UserAddress.objects.get(pk=pk)
         add.delete()
+        messages.error(request, "Your address has been deleted successfully!.")
     return HttpResponseRedirect('/dashboard/')

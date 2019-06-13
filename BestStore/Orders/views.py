@@ -1,6 +1,8 @@
 import json
+
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from Products.models import Product
 from Orders.models import Order
@@ -16,9 +18,13 @@ def checkout(request):
 
 
 def order_display(request):
-    return render(request, 'Orders/order_processing.html', {'your_orders': Order.objects.filter(buyer=request.user.id),
+    # login required
+    if request.user.is_authenticated:
+        return render(request, 'Orders/order_processing.html', {'your_orders': Order.objects.filter(buyer=request.user.id),
                                                             'your_order_details': OrderDetail.objects.filter(
                                                                 order__buyer=request.user.id)})
+    else:
+        return redirect('loginform')
 
 
 def cart_detail_to_product(prod_dict):

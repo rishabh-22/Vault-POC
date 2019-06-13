@@ -6,15 +6,16 @@
 
 <div>
     <center>
-         <center><div style="height:400px;width:600px">
-<label>Phone:</label> <b>{{ add.mobile }}</b> <br>
-  <label>Address:</label> {{add.label}} {{ add.address }} <br>
+         <center><div style="height:250px;width:600px">
+      <label> {{add.label}} </label> </b> <br>
+  <label>Address:</label>  {{ add.address }} <br>
     {{add.city}}, {{add.state }} <br>
-    {{add.pincode}} {{add.landmark}}<br>
+    {{add.pincode}} <br> {{add.landmark}}<br>
     {{add.country}}<br>
+             <center><label>Phone:</label> <b>{{ add.mobile }}</center>
         <form method="post" action="{% url 'delete_address' add.pk %}" style="float:right;">
             {% csrf_token %}
-            <input type="submit" value="Delete" >
+            <button class="label label-danger" type="submit" value="Delete" style="width:110px"><strong>Delete</strong></button>
         </form>
          </div>
          </center>

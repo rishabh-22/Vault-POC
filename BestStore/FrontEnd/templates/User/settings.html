@@ -78,7 +78,7 @@ a:visited {
 				<!-- //sidebar -->
 
 	<div class="col-md-9">
-            <div class="profile-content col-md-5">
+            <div class="profile-content col-md-6">
 				<p> <span> <h3> <a class="glyphicon glyphicon-asterisk" style="color:orange;" href="{% url 'change_password' %}"> Change Password</a></h3></span></p><br>
 				{% if user.is_authenticated %}
 				<p> <span> <strong> <h3> <a class="glyphicon glyphicon-transfer" style="color:orange;" href="{% url 'update_profile' user.id %}"> Update Profile </h3></a> </strong> </span> </p><br>
@@ -89,8 +89,8 @@ a:visited {
             </div>
 		<div class="profile-content col-md-4">
 			{% if user.is_authenticated %}
+			<p> <span> <strong> <h3> <a class="glyphicon glyphicon-plus" style="color:orange;" href="{% url 'add_address' %}"> Add Address </h3></a> </strong> </span> </p><br>
 			<p> <span> <strong> <h3> <a class="glyphicon glyphicon-fire" style="color:orange;" href="{% url 'delete_profile' user.id %}"> Delete Profile </h3></a> </strong> </span> </p><br>
-				<p> <span> <strong> <h3> <a class="glyphicon glyphicon-plus" style="color:orange;" href="{% url 'add_address' %}"> Add Address </h3></a> </strong> </span> </p><br>
 
 				{% endif %}
 		</div>

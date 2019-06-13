@@ -336,12 +336,6 @@ def add_to_wishlist(request, pk):
         return redirect('loginform')
 
 
-# @login_required
-# def add_wishlist_to_cart(request, product_id):
-#     delete_from_wishlist(request, product_id)
-#     return HttpResponse(wishlist_items(request))
-
-
 @login_required
 def delete_from_wishlist(request, pk):
     try:
