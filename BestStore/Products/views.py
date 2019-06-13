@@ -213,7 +213,6 @@ def cart_update(request, pk):
             sess['cart'][str(pk)] = sess['cart'].get(str(pk), new_cart_item)
             new_qty = sess['cart'][str(pk)]['qty'] + int(qty)
             new_qty_above_max = Product.objects.get(pk=pk).quantity < new_qty
-            # import pdb; pdb.set_trace()
             if not new_qty_above_max:
                 # Sets new quantity to 0 in case quantity has gone negative
                 sess['cart'][str(pk)]['qty'] = int((abs(new_qty) + new_qty) / 2)

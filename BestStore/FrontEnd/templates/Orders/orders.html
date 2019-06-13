@@ -70,7 +70,17 @@
 		<tr>
 			<th style='text-align: right;'>SHIPPING ADDRESS</th>
 			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-			<td id='address-container'><input id='address' type='textarea'></td>
+			{% if address.all %}
+			<td id='address-container'><select id='address'>
+			{% for add in address %}
+				<option value="{{add.address}},{{add.city}},{{add.state}},{{add.pincode}}">{{add.label}} </option>
+			{% endfor %}
+			</select></td>
+			{% else %}
+			<div class="alert alert-danger" role="alert">
+				<option><strong>Oh snap!</strong> Please add an address first.</option>
+			</div>
+			{% endif %}
 		</tr>
 		<tr>
 			<td></td>

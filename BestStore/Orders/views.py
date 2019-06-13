@@ -7,6 +7,7 @@ from Orders.models import Order
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from Orders.models import OrderDetail
+from User.models import UserAddress
 
 
 def checkout(request):
@@ -40,7 +41,7 @@ def orders(request):
         product = [Product.objects.get(id=int(item)) for item in request.session.get("cart", None) if item is not None]
         order = Order()
         order.buyer = request.user
-        order.address = address
+        order.shipping_address = address
         order.save()
         total_amount = 0
         for products in product:
@@ -53,11 +54,14 @@ def orders(request):
         html_message = render_to_string('Orders/order_confirm_template.html',)
         plain_message = strip_tags(html_message)
         send_mail("Order Conformation", plain_message, "rbtherib2@gmail.com", [email], html_message=html_message, fail_silently=False)
+        del request.session['cart']
+        request.session.modified = True
         return JsonResponse({'success': True})
 
     if request.method == 'GET':
-            context = {'products': get_cart_items(request)}
-            return render(request, 'Orders/orders.html', context=context)
+        address = UserAddress.objects.filter(user=request.user)
+        context = {'products': get_cart_items(request), 'address': address}
+        return render(request, 'Orders/orders.html', context=context)
 
 
 def cancel_order(request, pk):

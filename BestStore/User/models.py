@@ -18,9 +18,8 @@ class UserAddress(models.Model):
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     country = CountryField(blank_label='(select country)')
-    pincode = models.IntegerField(max_length=6, null=True)
+    pincode = models.IntegerField()
     mobile = models.IntegerField()
-    is_deleted = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ['user', 'label']
