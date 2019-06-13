@@ -41,19 +41,19 @@
 					<ul class="dropdown-menu1" style="text-align: center">
 						<div id="price_range" >
 							<div class="dropdown" style="display: inline;">
-                                <label>$
-                                <input list="min_price_val" name="min_price_val" class="dropdown-value btn btn-default dropdown-toggle" style="width:120px"></label>
+								<label>$
+									<input list="min_price_val" name="min_price_val" class="dropdown-value btn btn-default dropdown-toggle" style="width:120px"></label>
 								<datalist data-toggle="dropdown" id="min_price_val">
 									<option value="0" selected>
-                                    <option value="100">
+									<option value="100">
 									<option value="1000">
 									<option value="5000">
 								</datalist>
 							</div>
 							<div class="dropdown" style="display: inline">
 								<label> to $
-                                <input list="max_price_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_price_val" style="width:120px"></label>
-                                <datalist data-toggle="dropdown" id="max_price_val">
+									<input list="max_price_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_price_val" style="width:120px"></label>
+								<datalist data-toggle="dropdown" id="max_price_val">
 									<option value="5001">
 									<option value="10000">
 									<option value="50000">
@@ -71,6 +71,7 @@
 							<input list="filter_size" class="dropdown-value btn btn-default dropdown-toggle" name="filter_size" style="width:120px"></label>
 							<datalist data-toggle="dropdown"  id="filter_size">
                                 <option value="Extra Small">Extra Small</option>
+
 								<option value="Small">Small</option>
 								<option value="Medium">Medium</option>
 								<option value="Large">Large</option>
@@ -79,9 +80,12 @@
 						</div><br><br>
 						{% endif %}
 						<div class="dropdown" style="display: inline"><b>Color :</b>
+
 							<input list="filter_color"  name="filter_color" class="dropdown-value btn btn-default dropdown-toggle" style="width:120px"></label>
 							<datalist data-toggle="dropdown" id="filter_color">
                                 <option value="Black" >Black</option>
+
+
 								<option value="Blue">Blue</option>
 								<option value="Red">Red</option>
 								<option value="Green">Green</option>
@@ -92,8 +96,8 @@
 						</div><br><br>
 						<div id="weight_range" >
 							<div class="dropdown" style="display: inline;"><b>Weight :</b>
-                                <label>
-                                <input list="min_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="min_weight_val" style="width: 70px"> to</label>
+								<label>
+									<input list="min_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="min_weight_val" style="width: 70px"> to</label>
 								<datalist data-toggle="dropdown" id="min_weight_val">
 									<option value="0">
 									<option value="100">
@@ -102,8 +106,8 @@
 								</datalist>
 							</div>
 							<div class="dropdown" style="display: inline">
-                                <label>
-                                <input list="max_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_weight_val" style="width: 70px">grams</label>
+								<label>
+									<input list="max_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_weight_val" style="width: 70px">grams</label>
 								<datalist data-toggle="dropdown" id="max_weight_val">
 									<option value="100">
 									<option value="1000">
@@ -117,7 +121,6 @@
 				<button class="btn btn-default align-right" type="submit" value="Filter">Filter</button>
 		</div>
 		</form>
-
 
 	<div class="col-md-8 products-right">
         {% if message %}
@@ -146,9 +149,11 @@
 		<div class="row" style="margin-top:0px">
 		</div>
     {% endif %}
+
 		<div class="products-right-grids-bottom">
 			<div id="products_display">
-				{% for prod in product %}
+
+				{% for prod in products %}
 				<div class="col-md-4 products-right-grids-bottom-grid" style='margin-bottom: 8px; margin-top: 8px;'>
 					<div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
 						<div class="new-collections-grid1-image">
@@ -168,29 +173,30 @@
 			<div class="clearfix"> </div>
 		</div>
 
-		<nav class="numbering animated wow slideInRight" data-wow-delay=".5s">
-			<ul class="pagination paging">
-				<li>
-					<a href="{{prev}}" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a>
-				</li>
-				{% for page_num in pages %}
-				{% if current_page == page_num %}
-				<li><a href="/products/?page={{page_num}}" style="background-color: lightblue !important;">{{page_num}}</a></li>
-				{% else %}
-				<li><a href="/products/?page={{page_num}}">{{page_num}}</a></li>
-				{% endif %}
-				{% endfor %}
-				<li>
-					<a href="{{next}}" aria-label="Next">
-						<span aria-hidden="true">&raquo;</span>
-					</a>
-				</li>
-			</ul>
-		</nav>
-	{% endif %}
-    </div>
+		{% if products.has_other_pages %}
+		<ul class="pagination">
+			{% if products.has_previous %}
+			<li><a href="?page={{ products.previous_page_number }}">&laquo;</a></li>
+			{% else %}
+			<li class="disabled"><span>&laquo;</span></li>
+			{% endif %}
+			{% for i in products.paginator.page_range %}
+			{% if products.number == i %}
+			<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+			{% else %}
+			<li><a href="?page={{ i }}">{{ i }}</a></li>
+			{% endif %}
+			{% endfor %}
+			{% if products.has_next %}
+			<li><a href="?page={{ products.next_page_number }}">&raquo;</a></li>
+			{% else %}
+			<li class="disabled"><span>&raquo;</span></li>
+			{% endif %}
+		</ul>
+		{% endif %}
+
+		{% endif %}
+	</div>
 	<div class="clearfix"> </div>
 </div>
 </div>

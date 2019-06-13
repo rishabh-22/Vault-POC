@@ -103,7 +103,6 @@ def change_password(request):
                 return redirect('password_reset_complete')
             else:
                 messages.error(request, "The old password you have entered is wrong")
-                # import pdb; pdb.set_trace()
                 return render(request, 'Auth/change_password.html')
 
         else:
@@ -116,8 +115,8 @@ def change_password(request):
 
 def settings(request):
     return render(request, 'User/settings.html')
-
-
+  
+  
 def add_address(request):
     form = UserAddressForm()
     if request.method == 'POST':
@@ -129,6 +128,7 @@ def add_address(request):
             messages.error(request, "Your address is saved successfully!")
             return HttpResponseRedirect('/dashboard/')
         else:
+            # form.errors
             return render(request, 'User/add_address.html', {'form': form})
 
     return render(request, 'User/add_address.html', {'form': form})
