@@ -121,15 +121,24 @@ def settings(request):
 def add_address(request):
     form = UserAddressForm()
     if request.method == 'POST':
+        # import pdb
+        # pdb.set_trace()
         form = UserAddressForm(request.POST)
         if form.is_valid():
             # import pdb; pdb.set_trace()
             form.instance.user = request.user
-            form.save()
-            messages.error(request, "Your address is saved successfully!")
+
+            try:
+                form.save()
+                messages.error(request, "Your address is saved successfully!")
+            except:
+                messages.error(request, "Address label already exists.")
+                return render(request, 'User/add_address.html', {'form': form})
             return HttpResponseRedirect('/dashboard/')
+
         else:
             # form.errors
+            # messages.error(request, "Kindly change the label, an address with that label already exists")
             return render(request, 'User/add_address.html', {'form': form})
 
     return render(request, 'User/add_address.html', {'form': form})
