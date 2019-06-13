@@ -5,6 +5,7 @@
 {% extends "General/base.html" %}
 {% load static %}
 {% block content %}
+{% include 'User/messages.html' %}
 <style>
 
 <!--a:hover {-->
@@ -65,7 +66,7 @@ a:visited {
 							Your WishList </a>
 						</li>
 						<li>
-							<a href="#" style="color:#E88246">
+							<a href="{% url 'user_addresses' %}" style="color:#E88246">
 							<i class="glyphicon glyphicon-home"></i>
 							Your Address(s) </a>
 						</li>

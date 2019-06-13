@@ -1,0 +1,29 @@
+{% extends 'General/base.html' %}
+{% load static %}
+{% block content %}
+
+{% for add in address %}
+{% if not add.is_deleted %}
+<div>
+    <center>
+         <center><div style="height:400px;width:600px">
+<label>Phone:</label> <b>{{ add.mobile }}</b> <br>
+  <label>Address:</label> {{add.label}} {{ add.address }} <br>
+    {{add.city}}, {{add.state }} <br>
+    {{add.pincode}} {{add.landmark}}<br>
+    {{add.country}}<br>
+        <form method="post" action="{% url 'delete_address' add.pk %}" style="float:right;">
+            {% csrf_token %}
+            <input type="submit" value="Delete" >
+        </form>
+         </div>
+         </center>
+        {% else %}
+       <center><div style="height:400px;width:1000px"> <h2>You don't have any saved addresses with us.</h2></center> </div>
+        {% endif%}
+{% endfor %}
+
+        </center>
+</div>
+{% include 'General/footer.html' %}
+{% endblock %}

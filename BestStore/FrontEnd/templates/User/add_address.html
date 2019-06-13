@@ -1,0 +1,17 @@
+{% extends 'General/base.html' %}
+{% load static %}
+{% block content %}
+<center>
+    <div class="register">
+		<div class="container">
+			<h3 class="animated wow zoomIn" data-wow-delay=".5s" id='confirmation-title'>Add Address</h3><br>
+<form action="{% url 'add_address' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+<input type="submit" value="Submit Now" >
+</form>
+        </div>
+    </div>
+</center>
+{% include 'General/footer.html' %}
+{% endblock %}
