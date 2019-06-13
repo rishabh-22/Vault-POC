@@ -129,6 +129,7 @@ def add_address(request):
             messages.error(request, "Your address is saved successfully!")
             return HttpResponseRedirect('/dashboard/')
         else:
+            # form.errors
             return render(request, 'User/add_address.html', {'form': form})
 
     return render(request, 'User/add_address.html', {'form': form})
