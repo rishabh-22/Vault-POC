@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.template.loader import render_to_string
 from django.views.generic import ListView
 from .models import Product, Category, SubCategory, Newsletter, Tags, Wishlist
@@ -13,7 +14,6 @@ from django.views.generic.detail import DetailView
 from collections import OrderedDict
 from BestStore.settings import PRODUCTS_PER_PAGE, \
     PAGINATION_URL, EMAIL_SUBJECT, DUMMY_EMAIL
-from .helper import *
 
 
 def home(request):
@@ -76,16 +76,15 @@ def product_listings(request):
         filter = filter_listings(request)
     # If no products are in database then we have nothing to show the user
     # Set appropriate values for pagination parameters
-    prods_per_page = PRODUCTS_PER_PAGE
-    total_pages = ((abs(len(all_products)) - 1) // prods_per_page) + 1
-    if page < 1:
-        page = 1
-    elif page > total_pages:
-        page = total_pages
-    start_index = (page - 1) * prods_per_page
-    end_index = start_index + prods_per_page
+    paginator = Paginator(list(filter['product']), 6)
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
     # Set context variable for template to use to display the products and paginated navigation
-    # import pdb; pdb.set_trace()
     if not filter['product']:
         info = {
             'category': all_category,
@@ -97,12 +96,10 @@ def product_listings(request):
             'category_selected': filter.get('category'),
             'sub_category_selected': filter.get('sub_category'),
             'product': filter.get('product'),
-            'pages': range(1, total_pages + 1),
-            'current_page': page,
-            'prev': f'{PAGINATION_URL}{page - 1}' if page != 1 else '#',
-            'next': f'{PAGINATION_URL}{page + 1}' if page != total_pages else '#',
+            'products': products,
             'search_term': search_term,
         }
+
     # Render template with context containing pagination details
     return render(request, 'Products/products.html', context=info)
 

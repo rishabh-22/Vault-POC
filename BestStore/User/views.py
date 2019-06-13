@@ -103,7 +103,6 @@ def change_password(request):
                 return redirect('password_reset_complete')
             else:
                 messages.error(request, "The old password you have entered is wrong")
-                # import pdb; pdb.set_trace()
                 return render(request, 'Auth/change_password.html')
 
         else:
