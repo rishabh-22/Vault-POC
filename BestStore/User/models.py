@@ -11,7 +11,7 @@ class ContactQuery(models.Model):
 
 
 class UserAddress(models.Model):
-    label = models.CharField(max_length=20, default="Home", unique=True)
+    label = models.CharField(max_length=20, default="Home")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.CharField(max_length=100)
     landmark = models.CharField(max_length=50, null=True)
@@ -21,4 +21,7 @@ class UserAddress(models.Model):
     pincode = models.IntegerField(max_length=6, null=True)
     mobile = models.IntegerField()
     is_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ['user', 'label']
 
