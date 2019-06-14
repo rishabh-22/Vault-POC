@@ -90,6 +90,9 @@ class Tags(models.Model):
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True, null=True)
 
+    def __str__(self):
+        return self.product.name
+
 
 class ProductImages(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)

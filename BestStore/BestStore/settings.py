@@ -160,7 +160,7 @@ EMAIL_SUBJECT = 'Best Store Account Confirmation'
 PAGINATION_URL = '/products/?page='
 PRODUCTS_PER_PAGE = 6
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'loginform'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'homepage'
 

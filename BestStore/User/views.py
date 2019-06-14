@@ -117,7 +117,8 @@ def change_password(request):
 def settings(request):
     return render(request, 'User/settings.html')
   
-  
+
+@login_required
 def add_address(request):
     form = UserAddressForm()
     if request.method == 'POST':
