@@ -52,6 +52,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
               });
         });
 </script>
+
+
+<script>
+$(document).keydown(function(e) {
+switch(e.which) {
+case 13:
+console.log($('#search').val())
+$(".sb-search-submit").trigger("click");
+default: return; // exit this handler for other keys
+}
+e.preventDefault(); // prevent the default action (scroll / move caret)
+});
+</script>
 </head>
 <style>
 .loader {
