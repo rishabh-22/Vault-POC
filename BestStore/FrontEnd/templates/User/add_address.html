@@ -3,15 +3,19 @@
 {% load crispy_forms_tags %}
 {% block content %}
 {% include 'User/messages.html' %}
+			<h3 class="title animated wow zoomIn" data-wow-delay=".5s">Add Address</h3>
+
 		<div class="container">
 <div class="login-form-grids animated wow slideInUp" data-wow-delay=".5s">
-			<h3 class="animated wow zoomIn" data-wow-delay=".5s" id='confirmation-title'>Add Address</h3><br>
 
 <form action="{% url 'add_address' %}" method="POST">
     {% csrf_token %}
-    {{ form | crispy }}
+    <table>
+    {{ form.as_p }}
+    </table>
 <input type="submit" value="Submit Now" >
 </form>
+
         </div>
 </div>
 {% include 'General/footer.html' %}

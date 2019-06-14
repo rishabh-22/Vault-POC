@@ -5,167 +5,196 @@
 <body>
 <!-- breadcrumbs -->
 <div class="breadcrumbs">
-	<div class="container">
-		<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
-			<li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
-			<li class="active">Products</li>
-		</ol>
-	</div>
+   <div class="container">
+      <ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+         <li><a href="{% url 'homepage' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+         <li class="active">Products</li>
+      </ol>
+   </div>
 </div>
 </div>
 <div class="products">
-	<div class="container">
-		<div class="col-md-4 products-left">
-			<div class="categories animated wow slideInUp" data-wow-delay=".5s">
-				<h3>Categories</h3>
-				<ul class="cate">
-					{% for cat in category %}
-					<li><a class="filter_category" name="filter_category" href="/products/?filter_category={{ cat.category }}" value="{{ cat.category }}">{{ cat.category }}</a></li>
-					<ul>
-						{% for subcat in cat.subcategory_set.all %}
-						<li><a class="filter_sub_category" name="filter_sub_category" href="/products/?filter_sub_category={{ subcat.title }}" value="{{ subcat.title }}">{{ subcat.title }}</a></li>
-						{% endfor %}
-					</ul>
-					{% endfor %}
-				</ul>
-			</div>
-			<form method="GET" action="{% url 'products' %}">
-				<div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
-					{% if category_selected %}
-					<input type="text" name="filter_category" value="{{ category_selected }}" hidden>
-					{% endif %}
-					{% if sub_category_selected %}
-					<input type="text" name="filter_sub_category" value="{{ sub_category_selected }}" hidden>
-					{% endif %}
-					<h3>Filter By Price</h3>
-					<ul class="dropdown-menu1" style="text-align: center">
-						<div id="price_range" >
-							<div class="dropdown" style="display: inline;">
-                                <label>$
-                                <input list="min_price_val" name="min_price_val" class="dropdown-value btn btn-default dropdown-toggle" style="width:120px"></label>
-								<datalist data-toggle="dropdown" id="min_price_val">
-                                    <option value="100">
-									<option value="1000">
-									<option value="5000">
-								</datalist>
-							</div>
-							<div class="dropdown" style="display: inline">
-								<label> to $
-                                <input list="max_price_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_price_val" style="width:120px"></label>
-                                <datalist data-toggle="dropdown" id="max_price_val">
-									<option value="5001">
-									<option value="10000">
-									<option value="50000">
-								</datalist>
-							</div>
-						</div>
-					</ul>
-				</div>
-				<div class="categories animated wow slideInUp" data-wow-delay=".5s">
-					<h3>Product Details</h3>
-					<ul class="cate">
-						{% if category_selected == "Cloth" %}
-						<div class="dropdown" style="display: inline"><b>Size :</b>
-							<select class="dropdown-value btn btn-default dropdown-toggle" data-toggle="dropdown" name="filter_size" id="filter_size">
+   <div class="container">
+      <div class="col-md-4 products-left">
+         <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+            <h3>Categories</h3>
+            <ul class="cate">
+               {% for cat in category %}
+               <li><a class="filter_category" name="filter_category" href="/products/?filter_category={{ cat.category }}" value="{{ cat.category }}">{{ cat.category }}</a></li>
+               <ul>
+                  {% for subcat in cat.subcategory_set.all %}
+                  <li><a class="filter_sub_category" name="filter_sub_category" href="/products/?filter_sub_category={{ subcat.title }}" value="{{ subcat.title }}">{{ subcat.title }}</a></li>
+                  {% endfor %}
+               </ul>
+               {% endfor %}
+            </ul>
+         </div>
+         {% if category_selected or sub_category_selected %}
+         <form method="GET" action="{% url 'products' %}">
+            <div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
+               {% if category_selected %}
+               <input type="text" name="filter_category" value="{{ category_selected }}" hidden>
+               {% endif %}
+               {% if sub_category_selected %}
+               <input type="text" name="filter_sub_category" value="{{ sub_category_selected }}" hidden>
+               {% endif %}
+               <h3>Filter By Price</h3>
+               <ul class="dropdown-menu1" style="text-align: center">
+                  <div id="price_range" >
+                     <div class="dropdown" style="display: inline;">
+                        <label>$
+                           <input list="min_price_val" name="min_price_val" class="dropdown-value btn btn-default dropdown-toggle" style="width:120px"></label>
+                        <datalist data-toggle="dropdown" id="min_price_val">
+                           <option value="0" selected>
+                           <option value="100">
+                           <option value="1000">
+                           <option value="5000">
+                        </datalist>
+                     </div>
+                     <div class="dropdown" style="display: inline">
+                        <label> to $
+                           <input list="max_price_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_price_val" style="width:120px"></label>
+                        <datalist data-toggle="dropdown" id="max_price_val">
+                           <option value="5001">
+                           <option value="10000">
+                           <option value="50000">
+                           <option value="100000" selected>
+                        </datalist>
+                     </div>
+                  </div>
+               </ul>
+            </div>
+            <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+               <h3>Product Details</h3>
+               <ul class="cate">
+                  {% if category_selected == "Cloth" %}
+                  <div class="dropdown" style="display: inline"><b>Size :</b>
+                     <input list="filter_size" class="dropdown-value btn btn-default dropdown-toggle" name="filter_size" style="width:120px"></label>
+                     <datalist data-toggle="dropdown"  id="filter_size">
                                 <option value="Extra Small">Extra Small</option>
-								<option value="Small">Small</option>
-								<option value="Medium">Medium</option>
-								<option value="Large">Large</option>
-								<option value="Extra Large">Extra Large</option>
-							</select>
-						</div><br><br>
-						{% endif %}
-						<div class="dropdown" style="display: inline"><b>Color :</b>
-							<select class="dropdown-value btn btn-default dropdown-toggle" data-toggle="dropdown" name="filter_color" id="filter_color">
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                        <option value="Extra Large">Extra Large</option>
+                     </datalist>
+                  </div><br><br>
+                  {% endif %}
+                  <div class="dropdown" style="display: inline"><b>Color :</b>
+                     <input list="filter_color"  name="filter_color" class="dropdown-value btn btn-default dropdown-toggle" style="width:120px"></label>
+                     <datalist data-toggle="dropdown" id="filter_color">
                                 <option value="Black" >Black</option>
-								<option value="Blue">Blue</option>
-								<option value="Red">Red</option>
-								<option value="Green">Green</option>
-								<option value="White">White</option>
-								<option value="Rose Gold">Rose Gold</option>
-								<option value="Grey">Grey</option>
-							</select>
-						</div><br><br>
-						<div id="weight_range" >
-							<div class="dropdown" style="display: inline;"><b>Weight :</b>
-                                <label>
-                                <input list="min_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="min_weight_val" style="width: 70px"> to</label>
-								<datalist data-toggle="dropdown" id="min_weight_val">
-									<option value="100">
-									<option value="1000">
-									<option value="5000">
-								</datalist>
-							</div>
-							<div class="dropdown" style="display: inline">
-                                <label>
-                                <input list="max_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_weight_val" style="width: 70px">grams</label>
-								<datalist data-toggle="dropdown" id="max_weight_val">
-									<option value="100">
-									<option value="1000">
-									<option value="5001">
-									<option value="10000">
-								</datalist>
-							</div>
-						</div>
-				</div>
-				<button class="btn btn-default align-right" type="submit" value="Filter">Filter</button>
-		</div>
-		</form>
+                        <option value="Blue">Blue</option>
+                        <option value="Red">Red</option>
+                        <option value="Green">Green</option>
+                        <option value="White">White</option>
+                        <option value="Rose Gold">Rose Gold</option>
+                        <option value="Grey">Grey</option>
+                     </datalist>
+                  </div><br><br>
+                  <div id="weight_range" >
+                     <div class="dropdown" style="display: inline;"><b>Weight :</b>
+                        <label>
+                           <input list="min_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="min_weight_val" style="width: 70px"> to</label>
+                        <datalist data-toggle="dropdown" id="min_weight_val">
+                           <option value="0">
+                           <option value="100">
+                           <option value="1000">
+                           <option value="5000">
+                        </datalist>
+                     </div>
+                     <div class="dropdown" style="display: inline">
+                        <label>
+                           <input list="max_weight_val" class="dropdown-value btn btn-default dropdown-toggle" name="max_weight_val" style="width: 70px">grams</label>
+                        <datalist data-toggle="dropdown" id="max_weight_val">
+                           <option value="100">
+                           <option value="1000">
+                           <option value="5001">
+                           <option value="10000">
+                           <option value="50000">
+                        </datalist>
+                     </div>
+                  </div>
+         </div>
+         <button class="btn btn-default float-right" type="submit" value="Filter">Filter</button>
+             </form>
+            {% endif %}
+      </div>
 
-
-	<div class="col-md-8 products-right">
+   <div class="col-md-8 products-right">
         {% if message %}
         <div class="products-right-grids-bottom" style="text-align: center">
         <h1>{{ message }}</h1>
             </div>
         </div>
         {% else %}
-		<div class="products-right-grids-bottom">
-			<div id="products_display">
-				{% for prod in product %}
-				<div class="col-md-4 products-right-grids-bottom-grid" style='margin-bottom: 8px; margin-top: 8px;'>
-					<div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
-						<div class="new-collections-grid1-image">
-							<a href="single.html" class="product-image"><img src="{{prod.productimages_set.first.image.url}}" alt=" " height='170' width='200'></a>
-							<div class="new-collections-grid1-image-pos products-right-grids-pos">
-								<a href="/products/{{prod.slug}}/">Quick View</a>
-							</div>
-						</div>
-						<h4><a href="single.html">{{prod.name}}</a></h4>
-						<div class="simpleCart_shelfItem products-right-grid1-add-cart">
-							<p style='text-align: center;'>${{prod.price}}<a data-pk="{{prod.id}}" data-price="{{prod.price}}" class="add-item" href="#">add to cart </a></p>
-						</div>
-					</div>
-				</div>
-				{% endfor %}
-			</div>
-			<div class="clearfix"> </div>
-		</div>
+      {% if filter_tags %}
+    <div class="row" style="margin-top:0px;padding-top:30px;padding-left:15px">
+        {% for tag in filter_tags %}
+         {% if filter_tags.0 == tag %}
+            <span class="btn" style="border: 1px solid #D8703F;background-color: white;color: #D8703F;padding: 10px 20px;font-size: 16px;cursor: pointer;border-radius: 5px;">{{tag}}
+            </span>
+         {% else %}
+            <span class="btn" style="border: 1px solid red;background-color: white;color: red;padding: 10px 20px;font-size: 16px;cursor: pointer;border-radius: 5px;">{{tag}}
+               <a href="" style="float:right;color:red" class="close-buttons" id="{{tag}}">&times;</a>
+            </span>
+         {% endif %}
+      {% endfor %}
+      <span class="btn" style="border: 1px solid red;background-color: white;color: red;padding: 10px 20px;font-size: 16px;cursor: pointer;border-radius: 5px;">Clear All
+           <a href="" style="color:red" id="clear-all-btn" >&times;</a>
+      </span>
+      </div>
+      {% else %}
+      <div class="row" style="margin-top:0px">
+      </div>
+    {% endif %}
+      <div class="products-right-grids-bottom">
+         <div id="products_display">
 
-		<nav class="numbering animated wow slideInRight" data-wow-delay=".5s">
-			<ul class="pagination paging">
-				<li>
-					<a href="{{prev}}" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a>
-				</li>
-				{% for page_num in pages %}
-				{% if current_page == page_num %}
-				<li><a href="/products/?page={{page_num}}" style="background-color: lightblue !important;">{{page_num}}</a></li>
-				{% else %}
-				<li><a href="/products/?page={{page_num}}">{{page_num}}</a></li>
-				{% endif %}
-				{% endfor %}
-				<li>
-					<a href="{{next}}" aria-label="Next">
-						<span aria-hidden="true">&raquo;</span>
-					</a>
-				</li>
-			</ul>
-		</nav>
-	{% endif %}
-    </div>
-	<div class="clearfix"> </div>
+            {% for prod in products %}
+            <div class="col-md-4 products-right-grids-bottom-grid" style='margin-bottom: 8px; margin-top: 8px;'>
+               <div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+                  <div class="new-collections-grid1-image">
+                     <a href="single.html" class="product-image"><img src="{{prod.productimages_set.first.image.url}}" alt=" " height='170' width='200'></a>
+                     <div class="new-collections-grid1-image-pos products-right-grids-pos">
+                        <a href="/products/{{prod.slug}}/">Quick View</a>
+                     </div>
+                  </div>
+                  <h4><a href="single.html">{{prod.name}}</a></h4>
+                  <div class="simpleCart_shelfItem products-right-grid1-add-cart">
+                     <p style='text-align: center;'>${{prod.price}}<a data-pk="{{prod.id}}" data-price="{{prod.price}}" class="add-item" href="#">add to cart </a></p>
+                  </div>
+               </div>
+            </div>
+            {% endfor %}
+         </div>
+         <div class="clearfix"> </div>
+      </div>
+
+      {% if products.has_other_pages %}
+      <ul class="pagination">
+         {% if products.has_previous %}
+         <li><a href="?page={{ products.previous_page_number }}">&laquo;</a></li>
+         {% else %}
+         <li class="disabled"><span>&laquo;</span></li>
+         {% endif %}
+         {% for i in products.paginator.page_range %}
+         {% if products.number == i %}
+         <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+         {% else %}
+         <li><a href="?page={{ i }}">{{ i }}</a></li>
+         {% endif %}
+         {% endfor %}
+         {% if products.has_next %}
+         <li><a href="?page={{ products.next_page_number }}">&raquo;</a></li>
+         {% else %}
+         <li class="disabled"><span>&raquo;</span></li>
+         {% endif %}
+      </ul>
+      {% endif %}
+
+      {% endif %}
+   </div>
+   <div class="clearfix"> </div>
 </div>
 </div>
 <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
@@ -174,24 +203,47 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 <script>
+      $('#clear-all-btn').click(function(event){
+      event.preventDefault();
+         old_url = window.location.href.split('&')[0];
+         window.location.href = old_url;
+      });
+      $('.close-buttons').click(function(event)
+      {
+         result=[];
+         event.preventDefault();
+         filters = window.location.href.split('&');
+         for (i=1;i<filters.length;i++)
+         {
+            filter_value = filters[i].split('=')[1];
+            if(filter_value == this.id)
+            {
+         result = filters.filter(function(elem){
+          return elem != filters[i];
+      });
+            }
+         }
+         new_url = result.join('&');
+         window.location.href = new_url;
+      });
         $(document).ready(function(){
-        	$(".filter_value").css('cursor', "pointer");
-			$("#min_val, #max_val, .filter_value").click(function(){
-				var filter_value = $(this).html();
-				$.ajax({
-					url: '/products/filter',
-					data:{
-						'min_value': $('#min_val option:selected').val(),
-						'max_value': $('#max_val option:selected').val(),
-						'filter_value': filter_value
-					},
-					method : 'GET',
-					success: function(response) {
-						$("#products_display").html(response);
+           $(".filter_value").css('cursor', "pointer");
+         $("#min_val, #max_val, .filter_value").click(function(){
+            var filter_value = $(this).html();
+            $.ajax({
+               url: '/products/filter',
+               data:{
+                  'min_value': $('#min_val option:selected').val(),
+                  'max_value': $('#max_val option:selected').val(),
+                  'filter_value': filter_value
+               },
+               method : 'GET',
+               success: function(response) {
+                  $("#products_display").html(response);
 
-					}
-				});
-			});
+               }
+            });
+         });
         });
 </script>
 
