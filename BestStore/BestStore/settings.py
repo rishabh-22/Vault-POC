@@ -25,7 +25,7 @@ SECRET_KEY = 'd=quy&yf6qqdcf38!j(73p%5cse(sv8q=97)r-bw9isut^0t@e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -92,12 +92,17 @@ AUTHENTICATION_BACKENDS = (
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if 'RDS_HOSTNAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
     }
-}
 
 
 # Password validation
@@ -149,8 +154,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "rbtherib2@gmail.com"
-EMAIL_HOST_PASSWORD = "abc@123@xyz"
+EMAIL_HOST_USER = "beststore364@gmail.com"
+EMAIL_HOST_PASSWORD = "beststore1"
 
 USER_REGISTER_KEYS = ('username', 'first_name', 'last_name')
 VERIFY_EMAIL_URL = "http://127.0.0.1:8000/api/user/verify"
